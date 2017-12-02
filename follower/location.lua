@@ -42,14 +42,15 @@ function Location:free()
 	self.body = nil
 end
 
-function Location:update(dt) -- ::void!
+function Location:update(dt, world, followers, Follower ) -- ::void!
 	if self.cooldown_timer < self.cooldown then
 		self.cooldown_timer = self.cooldown_timer + dt
 	end
 	if self.activated then
 		self.activated = false
 		self.cooldown_timer = 0
-		-- SPAWN HERE
+		local x1,y1,_,_,_,_,x4,y4 = self.body:getWorldPoints( self.shape:getPoints() )
+		table.insert( followers, Follower.new( world, (x1+x4)/2, (y1+y4)/2 ) )
 	end
 end
 
@@ -66,7 +67,7 @@ function Location:input( act, val ) -- ::void!
 end
 
 function Location:collide( other, collision )
-	if other.id and other.id == 'player' then
+	if other.id and other.id == 'player' and self.cooldown_timer >= self.cooldown then
 		self.activated = true
 	end
 end

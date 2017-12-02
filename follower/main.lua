@@ -34,7 +34,7 @@ function love.update( dt )
 	end
 	for k, v in pairs( locations ) do
 		if v.alive then
-			v:update( dt )
+			v:update( dt, world, followers, Follower )
 		end
 	end
 	-- Cleaning up
