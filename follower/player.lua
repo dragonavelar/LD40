@@ -29,8 +29,6 @@ function Player.new(world, x, y, radius, maxspeed, linear_damping, angular_dampi
 	-- Fixin' dem shapes to dat boody
 	self.fixture = love.physics.newFixture( self.body, self.shape )
 	self.fixture:setUserData(self)
-	self.fixture:setCategory( COLLISION_MASK_PLAYER )
-	self.fixture:setMask()
 	-- Maximum speed
 	self.maxspeed = maxspeed
 	-- Object variables

@@ -30,8 +30,6 @@ function Follower.new(world, x, y, radius, maxspeed, linear_damping, angular_dam
 	-- Fixin' dem shapes to dat boody
 	self.fixture = love.physics.newFixture( self.body, self.shape )
 	self.fixture:setUserData(self)
-	self.fixture:setCategory( COLLISION_MASK_FOLLOWER )
-	self.fixture:setMask()
 	-- Maximum speed
 	self.maxspeed = maxspeed
 	-- Object variables

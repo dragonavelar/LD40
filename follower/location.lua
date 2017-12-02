@@ -22,8 +22,6 @@ function Location.new( world, patrols, Patrol, x, y, w, h, cooldown ) -- ::Locat
 	-- Fixin' dem shapes to dat boody
 	self.fixture = love.physics.newFixture( self.body, self.shape )
 	self.fixture:setUserData(self)
-	self.fixture:setCategory( COLLISION_MASK_LOCATION )
-	self.fixture:setMask()--( COLLISION_MASK_PLAYER, COLLISION_MASK_FOLLOWER )
 	-- Locationect variables
 	self.alive = true
 	self.cooldown = cooldown

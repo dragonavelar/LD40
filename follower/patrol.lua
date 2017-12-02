@@ -35,8 +35,6 @@ function Patrol.new(world, parent_location, x, y, radius, patrol_radius, maxspee
 	-- Fixin' dem shapes to dat boody
 	self.fixture = love.physics.newFixture( self.body, self.shape )
 	self.fixture:setUserData(self)
-	self.fixture:setCategory( COLLISION_MASK_FOLLOWER )
-	self.fixture:setMask()
 	-- Maximum speed
 	self.maxspeed = maxspeed
 	-- Object variables
@@ -50,6 +48,7 @@ function Patrol.new(world, parent_location, x, y, radius, patrol_radius, maxspee
 	self.patrol_y = py
 	self.objective_distance_threshold  = radius
 	self.state = Patrol.PATROL_STATE
+	self.passing_through = 0
 	return self
 end
 
@@ -113,6 +112,13 @@ function Patrol:collide( other, collision )
 	if other.id == "player" then
 		other.alive = false
 	end
+	if other.id == "follower" then
+		if collision then 
+			self.passing_through = self.passing_through + 1
+		else
+			self.passing_through = self.passing_through - 1
+		end
+	end
 end
 
 function Patrol:disable_collision( other, collision )
@@ -129,8 +135,17 @@ function Patrol:force_towards( tx, ty )
 	local x, y = self:get_center()
 	local fx, fy = util.dist2d( x, y, tx, ty )
 	local fmod = util.vec2dmod( fx, fy )
-	fx = self.stronkness * fx / fmod
-	fy = self.stronkness * fy / fmod
+	local mult = 1
+	if self.state == Patrol.CHASE_STATE then
+		mult = mult * 2
+	elseif self.state == Patrol.PATROL_STATE then 
+		mult = mult * 1/2
+	end
+	if self.passing_through > 0 then
+		mult = mult * 1/2
+	end
+	fx = mult * self.stronkness * fx / fmod
+	fy = mult * self.stronkness * fy / fmod
 	self.body:applyForce( fx, fy )
 end
 

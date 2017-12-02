@@ -19,7 +19,7 @@ COLLISION_MASK_P = 16
 
 collisions = {}
 
-collisions.debug = true
+collisions.debug = false
 
 function collisions.beginContact( a, b, coll )
 	if collisions.debug and a:getUserData() and b:getUserData() then
@@ -63,8 +63,8 @@ end
 
 function collisions.preSolve( a, b, coll ) -- TODO
 	if a:getUserData() and a:getUserData().disable_collision and b:getUserData() and b:getUserData().disable_collision then
-		a:getUserData():disable_collision( b, coll )
-		b:getUserData():disable_collision( a, coll )
+		a:getUserData():disable_collision( b:getUserData(), coll )
+		b:getUserData():disable_collision( a:getUserData(), coll )
 	end
 	return false
 end
