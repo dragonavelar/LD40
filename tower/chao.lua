@@ -3,30 +3,21 @@ require( "math" )
 local Chao = {}
 Chao.__index = Chao
 
-local limiter, feito = 1, 0
-
 function Chao.new(world, x, y, width, height) -- ::Chao
 	-- Variable initializations
 	x = x or 0
 	y = y or 0
 	width = width or 1
 	height = height or 1
+	
 	-- Physics stuff
 	local self = setmetatable( {}, Chao )
+	
 	-- Let the body hit the floor
 	self.body = love.physics.newBody( world, x, y, "dynamic" )
-	--self.body:setAngularDamping( angular_damping )
-	--self.body:setLinearDamping( linear_damping )
-	--self.body:setMass( mass )
-	--self.body:setFixedRotation( true )
-	-- The shape of you
-	self.image = love.graphics.newImage("assets/towerDefense_tile157.png")
-	-- Fixin' dem shapes to dat boody
-	--self.fixture = love.physics.newFixture( self.body, self.shape )
-	--self.fixture:setUserData(self)
-	-- Maximum speed
-	--self.maxspeed = maxspeed
-	-- Object variables
+
+	self.image = love.graphics.newImage("assets/grass.png")
+
 	self.stronkness = 0 -- So stronk
 	self.alive = true
 	return self
@@ -61,19 +52,14 @@ function Chao:draw() -- ::void!
 	w_tela = love.graphics.getWidth()
 	h_tela = love.graphics.getHeight()
 
-	--print(w_tela, h_tela)
-	--if feito < limiter then
-		for i=0, w_tela do
-			for j=0, h_tela do
-				love.graphics.draw(self.image, x, y,0, self.width, self.height)
-				y = y + h_imagem
-			end
-			x = x + w_imagem
-			y = 0
+	for i=0, w_tela/w_imagem do
+		for j=0, h_tela/h_imagem do
+			love.graphics.draw(self.image, x, y,0, self.width, self.height)
+			y = y + h_imagem
 		end
-	--end
-
-	feito = 1
+		x = x + w_imagem
+		y = 0
+	end	
 end
 
 function Chao:input(act,val) -- ::void!
