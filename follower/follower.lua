@@ -1,20 +1,24 @@
 require( "math" )
+require( "collisions" )
 
 local Follower = {}
 Follower.__index = Follower
+Follower.id = "follower"
 
-function Follower.new(world, x, y, radius, maxspeed, linear_damping, angular_damping, mass, strenght) -- ::Follower
+function Follower.new(world, x, y, radius, maxspeed, linear_damping, angular_damping, mass, strenght, sight_radius) -- ::Follower
 	-- Variable initializations
 	x = x or 0
 	y = y or 0
-	radius = radius or 50
-	maxspeed = maxspeed or 1000
-	linear_damping = linear_damping or 5
+	radius = radius or 10
+	maxspeed = maxspeed or 200
+	linear_damping = linear_damping or 3
 	angular_damping = angular_damping or 1
-	mass = mass or 0.25 -- So dense, wow. o:
-	strenght = strenght or 2500
-	-- Physics stuff
+	mass = mass or 0.05 -- So dense, wow. o:
+	strenght = strenght or 30
+	sight_radius = sight_radius or 10 * radius
+	-- Class stuff
 	local self = setmetatable( {}, Follower )
+	-- Physics stuff
 	-- Let the body hit the floor
 	self.body = love.physics.newBody( world, x, y, "dynamic" )
 	self.body:setAngularDamping( angular_damping )
@@ -26,10 +30,13 @@ function Follower.new(world, x, y, radius, maxspeed, linear_damping, angular_dam
 	-- Fixin' dem shapes to dat boody
 	self.fixture = love.physics.newFixture( self.body, self.shape )
 	self.fixture:setUserData(self)
+	self.fixture:setCategory( COLLISION_MASK_FOLLOWER )
+	self.fixture:setMask()
 	-- Maximum speed
 	self.maxspeed = maxspeed
 	-- Object variables
 	self.stronkness = strenght -- So stronk
+	self.sight_radius = sight_radius
 	self.alive = true
 	return self
 end
@@ -56,8 +63,12 @@ function Follower:update(dt, target_x, target_y) -- ::void!
 		fy = target_y - y
 		local f = math.sqrt( fx*fx + fy*fy )
 		if f == 0 then f = 1 end
-		fx = self.stronkness * fx / f
-		fy = self.stronkness * fy / f
+		if f > self.sight_radius then
+			fx, fy = 0, 0
+		else
+			fx = self.stronkness * fx / f
+			fy = self.stronkness * fy / f
+		end
 	end
 	self.body:applyForce( fx, fy )
 	x, y = nil, nil
@@ -77,13 +88,15 @@ function Follower:draw() -- ::void!
 	r = self.shape:getRadius()
 	love.graphics.setColor(100,0,100)
 	love.graphics.circle('fill', x, y, r )
-	print( x, y, r )
 end
 
 function Follower:input(act,val) -- ::void!
 end
 
 function Follower:collide( other, collision )
+end
+
+function Follower:disable_collision( other, collision )
 end
 
 return Follower

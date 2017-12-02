@@ -1,23 +1,51 @@
+require( "collisions" )
 local Player = require( "player" )
 local Follower = require( "follower" )
+local Location = require( "location" )
 local world = nil
 local player = nil
 local followers = {}
+local locations = {}
 
 function love.load()
 	world = love.physics.newWorld()
+	world:setCallbacks(
+		collisions.beginContact,
+		collisions.endContact,
+		collisions.preSolve,
+		collisions.postSolve )
 	player = Player.new( world )
 	table.insert( followers, Follower.new( world, 100, 100 ) )
+
+	table.insert( locations, Location.new( world, 150, 50 ) )
+	table.insert( locations, Location.new( world, 300, 200 ) )
+	table.insert( locations, Location.new( world, 400, 600 ) )
 end
 
 function love.update( dt )
+	-- Updating
 	world:update( dt )
 	player:update( dt )
 	local px, py = player:get_center()
 	for k, v in pairs( followers ) do
 		if v.alive then
 			v:update( dt, px, py )
-		else
+		end
+	end
+	for k, v in pairs( locations ) do
+		if v.alive then
+			v:update( dt )
+		end
+	end
+	-- Cleaning up
+	for k, v in pairs( followers ) do
+		if not v.alive then
+			v:free()
+			followers[ k ] = nil
+		end
+	end
+	for k, v in pairs( followers ) do
+		if not v.alive then
 			v:free()
 			followers[ k ] = nil
 		end
@@ -27,6 +55,9 @@ end
 function love.draw()
 	player:draw()
 	for k, v in pairs( followers ) do
+		v:draw()
+	end
+	for k, v in pairs( locations ) do
 		v:draw()
 	end
 end

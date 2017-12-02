@@ -1,20 +1,23 @@
 require( "math" )
+require( "collisions" )
 
 local Player = {}
 Player.__index = Player
+Player.id = "player"
 
 function Player.new(world, x, y, radius, maxspeed, linear_damping, angular_damping, mass, strenght) -- ::Player
 	-- Variable initializations
 	x = x or 0
 	y = y or 0
-	radius = radius or 50
-	maxspeed = maxspeed or 1000
+	radius = radius or 12
+	maxspeed = maxspeed or 220
 	linear_damping = linear_damping or 5
 	angular_damping = angular_damping or 1
-	mass = mass or 1.0 -- So dense, wow. o:
-	strenght = strenght or 10000
-	-- Physics stuff
+	mass = mass or 0.2 -- So dense, wow. o:
+	strenght = strenght or 200
+	-- Class stuff
 	local self = setmetatable( {}, Player )
+	-- Physics stuff
 	-- Let the body hit the floor
 	self.body = love.physics.newBody( world, x, y, "dynamic" )
 	self.body:setAngularDamping( angular_damping )
@@ -26,6 +29,8 @@ function Player.new(world, x, y, radius, maxspeed, linear_damping, angular_dampi
 	-- Fixin' dem shapes to dat boody
 	self.fixture = love.physics.newFixture( self.body, self.shape )
 	self.fixture:setUserData(self)
+	self.fixture:setCategory( COLLISION_MASK_PLAYER )
+	self.fixture:setMask()
 	-- Maximum speed
 	self.maxspeed = maxspeed
 	-- Object variables
@@ -72,7 +77,6 @@ function Player:draw() -- ::void!
 	r = self.shape:getRadius()
 	love.graphics.setColor(100,0,0)
 	love.graphics.circle('fill', x, y, r )
-	print( x, y, r )
 end
 
 function Player:input(act,val) -- ::void!
@@ -83,6 +87,9 @@ end
 
 function Player:get_center() -- ::(float, float)
 	return self.body:getWorldPoint( self.shape:getPoint() )
+end
+
+function Player:disable_collision( other, collision )
 end
 
 return Player
