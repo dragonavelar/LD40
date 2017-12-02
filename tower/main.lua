@@ -1,17 +1,19 @@
-local image, music
+local Player = require( "chao" )
+local world = nil
+local player = nil
 
 function love.load()
-	image = love.graphics.newImage("cute_image.png")
-	music = love.audio.newSource("nice_music.ogg")
-	music:play()
+	world = love.physics.newWorld(0, 9.81*64, true)
+	chao = Chao.new()
 end
 
 function love.update( dt )
+	world:update( dt )
+	chao:update( dt )
 end
 
 function love.draw()
-	love.graphics.print("Hello World", 400, 300)
-	love.graphics.draw( image )
+	chao:draw()
 end
 
 
