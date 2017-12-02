@@ -1,10 +1,10 @@
-local Player = require( "chao" )
+local Chao = require( "chao" )
 local world = nil
-local player = nil
+local chao = nil
 
 function love.load()
-	world = love.physics.newWorld(0, 9.81*64, true)
-	chao = Chao.new()
+	world = love.physics.newWorld(0, 0, false)
+	chao = Chao.new(world)
 end
 
 function love.update( dt )
