@@ -1,19 +1,24 @@
-local Chao = require( "chao" )
+local Chao = require("chao")
+local Torre_principal = require("torre_principal")
 local world = nil
 local chao = nil
 
 function love.load()
 	world = love.physics.newWorld(0, 0, false)
 	chao = Chao.new(world)
+	torre_principal = Torre_principal.new(world)
 end
 
-function love.update( dt )
-	world:update( dt )
-	chao:update( dt )
+function love.update(dt)
+	world:update(dt)
+	chao:update(dt)
+	torre_principal:update(dt)
 end
 
 function love.draw()
 	chao:draw()
+	torre_principal:draw()
+	
 end
 
 
