@@ -142,7 +142,7 @@ function Patrol:force_towards( tx, ty )
 		mult = mult * 1/2
 	end
 	if self.passing_through > 0 then
-		mult = mult * 1/2
+		mult = mult * 2/3
 	end
 	fx = mult * self.stronkness * fx / fmod
 	fy = mult * self.stronkness * fy / fmod
