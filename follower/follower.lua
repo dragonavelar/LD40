@@ -1,9 +1,9 @@
 require( "math" )
 
-local Player = {}
-Player.__index = Player
+local Follower = {}
+Follower.__index = Follower
 
-function Player.new(world, x, y, radius, maxspeed, linear_damping, angular_damping, mass, strenght) -- ::Player
+function Follower.new(world, x, y, radius, maxspeed, linear_damping, angular_damping, mass, strenght) -- ::Follower
 	-- Variable initializations
 	x = x or 0
 	y = y or 0
@@ -11,10 +11,10 @@ function Player.new(world, x, y, radius, maxspeed, linear_damping, angular_dampi
 	maxspeed = maxspeed or 1000
 	linear_damping = linear_damping or 5
 	angular_damping = angular_damping or 1
-	mass = mass or 1.0 -- So dense, wow. o:
-	strenght = strenght or 10000
+	mass = mass or 0.25 -- So dense, wow. o:
+	strenght = strenght or 2500
 	-- Physics stuff
-	local self = setmetatable( {}, Player )
+	local self = setmetatable( {}, Follower )
 	-- Let the body hit the floor
 	self.body = love.physics.newBody( world, x, y, "dynamic" )
 	self.body:setAngularDamping( angular_damping )
@@ -34,7 +34,7 @@ function Player.new(world, x, y, radius, maxspeed, linear_damping, angular_dampi
 	return self
 end
 
-function Player:free() -- ::void!
+function Follower:free() -- ::void!
 	self.fixture:setUserData( nil )
 	self.fixture:destroy()
 	self.fixture = nil
@@ -44,18 +44,23 @@ function Player:free() -- ::void!
 	self.body = nil
 end
 
-function Player:update(dt) -- ::void!
+function Follower:update(dt, target_x, target_y) -- ::void!
 	-- Apply movement
-	local fx, fy = 0, 0
-	if love.keyboard.isDown( "w", "up" ) then fy = fy - 1 end
-	if love.keyboard.isDown( "s", "down" ) then fy = fy + 1 end
-	if love.keyboard.isDown( "a", "left" ) then fx = fx - 1 end
-	if love.keyboard.isDown( "d", "right" ) then fx = fx + 1 end
-	local f = math.sqrt( fx*fx + fy*fy )
-	if f == 0 then f = 1 end
-	fx = self.stronkness * fx / f
-	fy = self.stronkness * fy / f
+	local x, y = self.body:getWorldPoint( self.shape:getPoint() )
+	local fx, fy = 0,0
+	if ( target_x ~= nil and target_y ~= nil )
+		and
+		( x ~= target_x and y ~= target_y )
+	then
+		fx = target_x - x
+		fy = target_y - y
+		local f = math.sqrt( fx*fx + fy*fy )
+		if f == 0 then f = 1 end
+		fx = self.stronkness * fx / f
+		fy = self.stronkness * fy / f
+	end
 	self.body:applyForce( fx, fy )
+	x, y = nil, nil
 	fx, fy, f = nil, nil, nil
 	-- Limit speed for limiting purposes
 	local vx, vy = self.body:getLinearVelocity()
@@ -66,23 +71,19 @@ function Player:update(dt) -- ::void!
 	end
 end
 
-function Player:draw() -- ::void!
+function Follower:draw() -- ::void!
 	local x,y,r
 	x, y = self.body:getWorldPoint( self.shape:getPoint() )
 	r = self.shape:getRadius()
-	love.graphics.setColor(100,0,0)
+	love.graphics.setColor(100,0,100)
 	love.graphics.circle('fill', x, y, r )
 	print( x, y, r )
 end
 
-function Player:input(act,val) -- ::void!
+function Follower:input(act,val) -- ::void!
 end
 
-function Player:collide( other, collision )
+function Follower:collide( other, collision )
 end
 
-function Player:get_center() -- ::(float, float)
-	return self.body:getWorldPoint( self.shape:getPoint() )
-end
-
-return Player
+return Follower

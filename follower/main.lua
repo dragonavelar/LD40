@@ -1,23 +1,42 @@
 local Player = require( "player" )
+local Follower = require( "follower" )
 local world = nil
 local player = nil
+local followers = {}
 
 function love.load()
 	world = love.physics.newWorld()
 	player = Player.new( world )
+	table.insert( followers, Follower.new( world, 100, 100 ) )
 end
 
 function love.update( dt )
 	world:update( dt )
 	player:update( dt )
+	local px, py = player:get_center()
+	for k, v in pairs( followers ) do
+		if v.alive then
+			v:update( dt, px, py )
+		else
+			v:free()
+			followers[ k ] = nil
+		end
+	end
 end
 
 function love.draw()
 	player:draw()
+	for k, v in pairs( followers ) do
+		v:draw()
+	end
 end
 
 
-
+function love.mousereleased( x, y, button, istouch )
+	if button == 1 then
+		table.insert( followers, Follower.new( world, x, y ) )
+	end
+end
 
 
 
