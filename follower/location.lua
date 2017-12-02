@@ -4,7 +4,7 @@ local Location = {}
 Location.__index = Location
 Location.id = "location"
 
-function Location.new( world, x, y, w, h, cooldown ) -- ::Location
+function Location.new( world, patrols, Patrol, x, y, w, h, cooldown ) -- ::Location
 	-- Variable initializations
 	x = x or 0
 	y = y or 0
@@ -29,6 +29,7 @@ function Location.new( world, x, y, w, h, cooldown ) -- ::Location
 	self.cooldown = cooldown
 	self.cooldown_timer = self.cooldown
 	self.activated = false
+	table.insert( patrols, Patrol.new( world, self, x, y ) )
 	return self
 end
 
@@ -42,15 +43,15 @@ function Location:free()
 	self.body = nil
 end
 
-function Location:update(dt, world, followers, Follower ) -- ::void!
+function Location:update(dt, world, followers, Follower, patrols, Patrol ) -- ::void!
 	if self.cooldown_timer < self.cooldown then
 		self.cooldown_timer = self.cooldown_timer + dt
 	end
 	if self.activated then
 		self.activated = false
 		self.cooldown_timer = 0
-		local x1,y1,_,_,_,_,x4,y4 = self.body:getWorldPoints( self.shape:getPoints() )
-		table.insert( followers, Follower.new( world, (x1+x4)/2, (y1+y4)/2 ) )
+		local x, y = self:get_center()
+		table.insert( followers, Follower.new( world, x, y ) )
 	end
 end
 
@@ -74,6 +75,11 @@ end
 
 function Location:disable_collision( other, collision )
 	collision:setEnabled( false )
+end
+
+function Location:get_center()
+	local x1,y1,_,_,_,_,x4,y4 = self.body:getWorldPoints( self.shape:getPoints() )
+	return (x1+x4)/2, (y1+y4)/2
 end
 
 return Location

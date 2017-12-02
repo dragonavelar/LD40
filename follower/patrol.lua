@@ -1,0 +1,137 @@
+require( "math" )
+require( "util" )
+require( "collisions" )
+
+local Patrol = {}
+Patrol.__index = Patrol
+Patrol.id = "patrol"
+
+Patrol.PATROL_STATE = "patrolling"
+Patrol.CHASE_STATE = "chasing"
+
+function Patrol.new(world, parent_location, x, y, radius, patrol_radius, maxspeed, linear_damping, angular_damping, mass, strenght, sight_radius) -- ::Patrol
+	-- Variable initializations
+	x = x or 0
+	y = y or 0
+	radius = radius or 10
+	maxspeed = maxspeed or 200
+	linear_damping = linear_damping or 3
+	angular_damping = angular_damping or 1
+	mass = mass or 0.05 -- So dense, wow. o:
+	strenght = strenght or 30
+	sight_radius = sight_radius or 10 * radius
+	patrol_radius = patrol_radius or 100
+	-- Class stuff
+	local self = setmetatable( {}, Patrol )
+	-- Physics stuff
+	-- Let the body hit the floor
+	self.body = love.physics.newBody( world, x, y, "dynamic" )
+	self.body:setAngularDamping( angular_damping )
+	self.body:setLinearDamping( linear_damping )
+	self.body:setMass( mass )
+	self.body:setFixedRotation( true )
+	-- The shape of you
+	self.shape = love.physics.newCircleShape( radius )
+	-- Fixin' dem shapes to dat boody
+	self.fixture = love.physics.newFixture( self.body, self.shape )
+	self.fixture:setUserData(self)
+	self.fixture:setCategory( COLLISION_MASK_FOLLOWER )
+	self.fixture:setMask()
+	-- Maximum speed
+	self.maxspeed = maxspeed
+	-- Object variables
+	self.stronkness = strenght -- So stronk
+	self.sight_radius = sight_radius
+	self.alive = true
+	self.parent = parent_location
+	self.patrol_radius = patrol_radius
+	local px, py = self.parent:get_center()
+	self.patrol_x = px
+	self.patrol_y = py
+	self.objective_distance_threshold  = radius
+	self.state = Patrol.PATROL_STATE
+	return self
+end
+
+function Patrol:free() -- ::void!
+	self.fixture:setUserData( nil )
+	self.fixture:destroy()
+	self.fixture = nil
+--	self.shape:destroy()
+	self.shape = nil
+	self.body:destroy()
+	self.body = nil
+end
+
+function Patrol:update(dt, target_x, target_y) -- ::void!
+	-- Apply movement
+	local x, y = self:get_center()
+	if ( target_x ~= nil and target_y ~= nil ) then
+		local d = util.dist2dmod( x, y, target_x, target_y )
+		if d > self.sight_radius then
+			self.state = Patrol.PATROL_STATE
+		else
+			self.state = Patrol.CHASE_STATE
+		end
+	end
+
+	if self.state == Patrol.CHASE_STATE then
+		self:force_towards( target_x, target_y )
+	elseif self.state == Patrol.PATROL_STATE then
+		self:force_towards( self.patrol_x, self.patrol_y )
+		if util.dist2dmod( x, y, self.patrol_x, self.patrol_y ) < self.objective_distance_threshold then
+			local r = math.random() * self.patrol_radius
+			local o = math.random() * 2 * math.pi
+			local x,y = self.parent:get_center()
+			self.patrol_x = x + r * math.cos( o )
+			self.patrol_y = y + r * math.sin( o )
+		end
+	end
+	x, y = nil, nil
+	fx, fy, f = nil, nil, nil
+	-- Limit speed for limiting purposes
+	local vx, vy = self.body:getLinearVelocity()
+	local v = math.sqrt( vx*vx + vy*vy )
+	if v > self.maxspeed then
+		vx = self.maxspeed * vx / v
+		vy = self.maxspeed * vy / v
+	end
+end
+
+function Patrol:draw() -- ::void!
+	local x,y,r
+	x, y = self.body:getWorldPoint( self.shape:getPoint() )
+	r = self.shape:getRadius()
+	love.graphics.setColor(0,128,0)
+	love.graphics.circle('fill', x, y, r )
+end
+
+function Patrol:input(act,val) -- ::void!
+end
+
+function Patrol:collide( other, collision )
+	if other.id == "player" then
+		other.alive = false
+	end
+end
+
+function Patrol:disable_collision( other, collision )
+	if other.id == "follower" then
+		collision:setEnabled( false )
+	end
+end
+
+function Patrol:get_center()
+	return self.body:getWorldPoint( self.shape:getPoint() )
+end
+
+function Patrol:force_towards( tx, ty )
+	local x, y = self:get_center()
+	local fx, fy = util.dist2d( x, y, tx, ty )
+	local fmod = util.vec2dmod( fx, fy )
+	fx = self.stronkness * fx / fmod
+	fy = self.stronkness * fy / fmod
+	self.body:applyForce( fx, fy )
+end
+
+return Patrol

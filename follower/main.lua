@@ -1,11 +1,14 @@
 require( "collisions" )
 local Player = require( "player" )
 local Follower = require( "follower" )
+local Patrol = require( "patrol" )
 local Location = require( "location" )
 local world = nil
 local player = nil
 local followers = {}
+local patrols = {}
 local locations = {}
+
 
 function love.load()
 	world = love.physics.newWorld()
@@ -17,12 +20,16 @@ function love.load()
 	player = Player.new( world )
 	table.insert( followers, Follower.new( world, 100, 100 ) )
 
-	table.insert( locations, Location.new( world, 150, 50 ) )
-	table.insert( locations, Location.new( world, 300, 200 ) )
-	table.insert( locations, Location.new( world, 400, 600 ) )
+	table.insert( locations, Location.new( world, patrols, Patrol, 150, 50 ) )
+	table.insert( locations, Location.new( world, patrols, Patrol, 300, 200 ) )
+	table.insert( locations, Location.new( world, patrols, Patrol, 400, 600 ) )
 end
 
 function love.update( dt )
+	if not player.alive then
+		print( "PERDEEEU" )
+		love.event.quit()
+	end
 	-- Updating
 	world:update( dt )
 	player:update( dt )
@@ -32,9 +39,14 @@ function love.update( dt )
 			v:update( dt, px, py )
 		end
 	end
+	for k, v in pairs( patrols ) do
+		if v.alive then
+			v:update( dt, px, py )
+		end
+	end
 	for k, v in pairs( locations ) do
 		if v.alive then
-			v:update( dt, world, followers, Follower )
+			v:update( dt, world, followers, Follower, patrols, Patrol )
 		end
 	end
 	-- Cleaning up
@@ -44,8 +56,14 @@ function love.update( dt )
 			followers[ k ] = nil
 		end
 	end
-	for k, v in pairs( followers ) do
+	for k, v in pairs( locations ) do
 		if not v.alive then
+			v:free()
+			followers[ k ] = nil
+		end
+	end
+	for k, v in pairs( patrols ) do
+		if not v.alive or v.parent == nil or not v.parent.alive then
 			v:free()
 			followers[ k ] = nil
 		end
@@ -53,13 +71,16 @@ function love.update( dt )
 end
 
 function love.draw()
-	player:draw()
-	for k, v in pairs( followers ) do
-		v:draw()
-	end
 	for k, v in pairs( locations ) do
 		v:draw()
 	end
+	for k, v in pairs( followers ) do
+		v:draw()
+	end
+	for k, v in pairs( patrols ) do
+		v:draw()
+	end
+	player:draw()
 end
 
 
