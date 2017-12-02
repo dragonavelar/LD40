@@ -8,12 +8,12 @@ function love.load()
 end
 
 function love.update( dt )
-  world:update( dt )
-  player:update( dt )
+	world:update( dt )
+	player:update( dt )
 end
 
 function love.draw()
-  player:draw()
+	player:draw()
 end
 
 
