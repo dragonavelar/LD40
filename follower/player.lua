@@ -54,10 +54,10 @@ end
 function Player:update(dt) -- ::void!
 	-- Apply movement
 	local fx, fy = 0, 0
-	if love.keyboard.isDown( "w", "up" ) then fy = fy - 1 end
-	if love.keyboard.isDown( "s", "down" ) then fy = fy + 1 end
-	if love.keyboard.isDown( "a", "left" ) then fx = fx - 1 end
-	if love.keyboard.isDown( "d", "right" ) then fx = fx + 1 end
+	if love.keyboard.isScancodeDown( "w", "up" ) then fy = fy - 1 end
+	if love.keyboard.isScancodeDown( "s", "down" ) then fy = fy + 1 end
+	if love.keyboard.isScancodeDown( "a", "left" ) then fx = fx - 1 end
+	if love.keyboard.isScancodeDown( "d", "right" ) then fx = fx + 1 end
 	local f = math.sqrt( fx*fx + fy*fy )
 	if f == 0 then f = 1 end
 	fx = self.stronkness * fx / f
