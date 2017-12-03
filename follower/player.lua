@@ -81,6 +81,13 @@ function Player:update(dt) -- ::void!
 	elseif vx < 0 then
 		self.last_direction = -1
 	end
+	-- Throw fish
+	if self.fish_target_x ~= nil and self.fish_target_y ~= nil then
+		-- TODO spawn fish here
+	end
+	if self.throw_fish_cooldown < self.throw_fish_cooldown_timer then
+		self.throw_fish_cooldown = self.throw_fish_cooldown + dt
+	end
 end
 
 function Player:draw( screenmanager ) -- ::void!
@@ -98,7 +105,7 @@ function Player:draw( screenmanager ) -- ::void!
 	local w = self.sprites.idle:getWidth()
 	local h = self.sprites.idle:getHeight()
 	local sw = screenmanager:getScaleFactor( self.sprites.idle:getWidth(), self.sprites.idle:getWidth() / self.sprites.pxpm )
-	local sh = screenmanager:getScaleFactor( self.sprites.idle:getWidth(), self.sprites.idle:getWidth() / self.sprites.pxpm )
+	local sh = screenmanager:getScaleFactor( self.sprites.idle:getHeight(), self.sprites.idle:getHeight() / self.sprites.pxpm )
 	love.graphics.draw( self.sprites.idle, x, y, 0, dir * sw, sh, w/2, h/2 )
 end
 
@@ -106,6 +113,7 @@ function Player:input(act,val) -- ::void!
 	if act == "mousepressed" then
 		if self.throw_fish_cooldown_timer >= self.throw_fish_cooldown then
 			self.fish_target_x, self.fish_target_y = val["x"], val["y"]
+			self.throw_fish_cooldown = 0
 		end
 	elseif act == "keypressed" then
 		if val["scancode"] == "w" or val["scancode"] == "up" then
