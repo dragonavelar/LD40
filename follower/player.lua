@@ -104,8 +104,8 @@ function Player:draw( screenmanager ) -- ::void!
 	local dir = self.last_direction
 	local w = self.sprites.idle:getWidth()
 	local h = self.sprites.idle:getHeight()
-	local sw = screenmanager:getScaleFactor( self.sprites.idle:getWidth(), self.sprites.idle:getWidth() / self.sprites.pxpm )
-	local sh = screenmanager:getScaleFactor( self.sprites.idle:getHeight(), self.sprites.idle:getHeight() / self.sprites.pxpm )
+	local sw = sm:getScaleFactor( self.sprites.idle:getWidth(), self.sprites.idle:getWidth() / self.sprites.pxpm )
+	local sh = sm:getScaleFactor( self.sprites.idle:getHeight(), self.sprites.idle:getHeight() / self.sprites.pxpm )
 	love.graphics.draw( self.sprites.idle, x, y, 0, dir * sw, sh, w/2, h/2 )
 end
 

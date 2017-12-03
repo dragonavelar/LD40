@@ -2,6 +2,19 @@ require( "collisions" )
 local Ingame = {}
 Ingame.__index = Ingame
 Ingame.state_id = "Ingame"
+Ingame.sprites = {}
+Ingame.sprites.pxpm = 256
+Ingame.sprites.floor = love.graphics.newImage("assets/floor.png")
+Ingame.sprites.houses_back = {
+	love.graphics.newImage("assets/house-04.png"),
+	love.graphics.newImage("assets/house-05.png"),
+	love.graphics.newImage("assets/house-06.png")
+}
+Ingame.sprites.houses_front = {
+	love.graphics.newImage("assets/house-01.png"),
+	love.graphics.newImage("assets/house-02.png"),
+	love.graphics.newImage("assets/house-03.png")
+}
 
 function Ingame.load( screenmanager, extra ) -- ::Ingame
 	-- Variable initializations
@@ -110,6 +123,23 @@ function Ingame:update( dt ) -- ::Ingame_id!
 end
 
 function Ingame:draw() -- ::void!
+	local sm = self.screenmanager
+	local x, y, sw, sh
+
+	love.graphics.setColor(255,255,255)
+	x, y = sm:getScreenPos( 0, 0 )
+	sw = sm:getScaleFactor( self.sprites.floor:getWidth(), self.sprites.floor:getWidth() / self.sprites.pxpm )
+	sh = sm:getScaleFactor( self.sprites.floor:getHeight(), self.sprites.floor:getHeight() / self.sprites.pxpm )
+	love.graphics.draw( self.sprites.floor, x, y, 0, sw, sh )
+
+	for k, house in pairs( self.sprites.houses_back ) do
+		love.graphics.setColor(255,255,255)
+		x, y = sm:getScreenPos( 0, 0 )
+		sw = sm:getScaleFactor( house:getWidth(), house:getWidth() / self.sprites.pxpm )
+		sh = sm:getScaleFactor( house:getHeight(), house:getHeight() / self.sprites.pxpm )
+		love.graphics.draw( house, x, y, 0, sw, sh )
+	end
+
 	local k, v = nil, nil
 	for k, v in pairs( self.locations ) do
 		v:draw( self.screenmanager )
@@ -127,6 +157,14 @@ function Ingame:draw() -- ::void!
 	table.sort( sorted, Ingame.sort_by_y )
 	for k, v in pairs( sorted ) do
 		v:draw( self.screenmanager )
+	end
+
+	for k, house in pairs( self.sprites.houses_front ) do
+		love.graphics.setColor(255,255,255)
+		x, y = sm:getScreenPos( 0, 0 )
+		sw = sm:getScaleFactor( house:getWidth(), house:getWidth() / self.sprites.pxpm )
+		sh = sm:getScaleFactor( house:getHeight(), house:getHeight() / self.sprites.pxpm )
+		love.graphics.draw( house, x, y, 0, sw, sh )
 	end
 
 	self.screenmanager:update( 1 )
