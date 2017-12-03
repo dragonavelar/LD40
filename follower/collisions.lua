@@ -19,7 +19,7 @@ function collisions.beginContact( a, b, coll )
 end
 
 function collisions.endContact( a, b, coll )
-	if collisions.debug and a:getUserData() or b:getUserData() then
+	if collisions.debug and ( a:getUserData() or b:getUserData() ) then
 		local audi, budi = "nil", "nil"
 		if a:getUserData() then
 			audi = a:getUserData().id

@@ -31,6 +31,13 @@ end
 function love.update( dt )
 	if not player.alive then
 		print( "PERDEEEU" )
+		local counter = 0
+		for k, v in pairs( followers ) do
+			if v.alive then
+				counter = counter + 1
+			end
+		end
+		print( "Pontuacao: " .. counter )
 		love.event.quit()
 	end
 	-- Updating
