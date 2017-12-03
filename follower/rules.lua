@@ -2,7 +2,7 @@ local Rules = {}
 Rules.__index = Rules
 Rules.Rules_id = 'Rules'
 
-function Rules.load( screenmanager ) -- ::Rules
+function Rules.load( screenmanager, extra ) -- ::Rules
 	-- Variable initializations
 	-- Class stuff
 	local self = setmetatable( {}, Rules )
@@ -31,11 +31,11 @@ function Rules:input( act, val ) -- ::void!
 	
 end
 
-function Rules:transition( State ) -- ::Rules!
+function Rules:transition( State, extra ) -- ::Ingame!
 	if State == nil then
 		return self -- TODO change
 	end
-	local new_state = State.load( self.screenmanager )
+	local new_state = State.load( self.screenmanager, extra )
 	self:free()
 	return new_state
 end

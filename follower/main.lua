@@ -11,17 +11,17 @@ function love.load()
 end
 
 function love.update( dt )
-	local new_state = nil
-	new_state = current_state:update( dt )
+	local new_state, extra_arguments = nil, nil
+	new_state, extra_arguments = current_state:update( dt )
 	if new_state ~= nil then
 		if new_state == "ingame" then
-			new_state = current_state:transition( Ingame )
+			new_state = current_state:transition( Ingame, extra_arguments )
 		elseif new_state == "mainmenu" then
-			new_state = current_state:transition( Mainmenu ) -- TODO
+			new_state = current_state:transition( Mainmenu, extra_arguments ) -- TODO
 		elseif new_state == "gameover" then
-			new_state = current_state:transition( GameOver )
+			new_state = current_state:transition( Gameover, extra_arguments )
 		elseif new_state == "rules" then
-			new_state = current_state:transition( Rules )
+			new_state = current_state:transition( Rules, extra_arguments )
 		elseif new_state == "exit" then
 			love.event.quit()
 			return nil

@@ -3,7 +3,7 @@ local Ingame = {}
 Ingame.__index = Ingame
 Ingame.state_id = "Ingame"
 
-function Ingame.load( screenmanager ) -- ::Ingame
+function Ingame.load( screenmanager, extra ) -- ::Ingame
 	-- Variable initializations
 	-- Class stuff
 	local self = setmetatable( {}, Ingame )
@@ -17,6 +17,7 @@ function Ingame.load( screenmanager ) -- ::Ingame
 	self.followers = {}
 	self.patrols = {}
 	self.locations = {}
+	self.Gameover = Gameover
 
 	self.world = love.physics.newWorld()
 	self.world:setCallbacks(
@@ -95,15 +96,16 @@ function Ingame:update( dt ) -- ::Ingame_id!
 		end
 	end
 	if not self.player.alive then
-		print( "PERDEEEU" )
-		local counter = 0
+		local extra = {}
+		extra["score"] = 0
 		for k, v in pairs( self.followers ) do
 			if v.alive then
-				counter = counter + 1
+				extra["score"] = extra["score"] + 1
 			end
 		end
-		print( "Pontuacao: " .. counter )
-		love.event.quit()
+		print( "PERDEEEU" )
+		print( "Pontuacao: " .. extra["score"] )
+		return "gameover", extra
 	end
 end
 
@@ -138,11 +140,11 @@ function Ingame:input( act, val ) -- ::void!
 	self.player:input( act, val )
 end
 
-function Ingame:transition( State ) -- ::Ingame!
+function Ingame:transition( State, extra ) -- ::Ingame!
 	if State == nil then
 		return self -- TODO change
 	end
-	local new_state = State.load( self.screenmanager )
+	local new_state = State.load( self.screenmanager, extra )
 	self:free()
 	return new_state
 end
