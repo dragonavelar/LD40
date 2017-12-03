@@ -1,4 +1,5 @@
 local Screenmanager = require( "screenmanager" )
+local Rules = require( "rules" )
 local Ingame = require( "ingame" )
 local Gameover = require( "gameover" )
 local screenmanager = nil
@@ -13,7 +14,22 @@ function love.update( dt )
 	local new_state = nil
 	new_state = current_state:update( dt )
 	if new_state ~= nil then
-		new_state = state:transition()
+		if new_state == "ingame" then
+			new_state = current_state:transition( Ingame )
+		elseif new_state == "mainmenu" then
+			new_state = current_state:transition( Mainmenu ) -- TODO
+		elseif new_state == "gameover" then
+			new_state = current_state:transition( GameOver )
+		elseif new_state == "rules" then
+			new_state = current_state:transition( Rules )
+		elseif new_state == "exit" then
+			love.event.quit()
+			return nil
+		else
+			new_state = current_state:transition()
+		end
+		current_state = nil
+		current_state = new_state
 	end
 end
 

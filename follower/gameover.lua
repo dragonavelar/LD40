@@ -50,6 +50,7 @@ end
 
 function Gameover:transition( State ) -- ::Gameover!
 	if State == nil then
+		return self -- TODO change
 	end
 	new_state = State.new( self.screenmanager )
 	self:free()

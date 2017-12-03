@@ -140,6 +140,7 @@ end
 
 function Ingame:transition( State ) -- ::Ingame!
 	if State == nil then
+		return self -- TODO change
 	end
 	new_state = State.new( self.screenmanager )
 	self:free()

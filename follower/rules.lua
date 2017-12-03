@@ -1,24 +1,24 @@
-local rules = {}
-rules.__index = rules
-rules.rules_id = 'rules'
+local Rules = {}
+Rules.__index = Rules
+Rules.Rules_id = 'Rules'
 
-function rules.load( screenmanager ) -- ::rules
+function Rules.load( screenmanager ) -- ::Rules
 	-- Variable initializations
 	-- Class stuff
-	local self = setmetatable( {}, rules )
+	local self = setmetatable( {}, Rules )
 	self.screenmanager = screenmanager
-	self.image = love.graphics.newImage( "assets/rules.png" )
+	self.image = love.graphics.newImage( "assets/Rules.png" )
 	return self
 end
 
-function rules:free()
+function Rules:free()
 end
 
-function rules:update( dt ) -- ::rules_id!
+function Rules:update( dt ) -- ::Rules_id!
 
 end
 
-function rules:draw( ) -- ::void!
+function Rules:draw( ) -- ::void!
 	local x,y
 	x, y = self.screenmanager_x,self.screenmanager_y	
 	local sw = self.screenmanager:getScaleFactor(self.image:getWidth(), self.screenmanager.meter_w)
@@ -27,11 +27,17 @@ function rules:draw( ) -- ::void!
 	love.graphics.draw(self.image, x, y, 0, sw, sh)
 end
 
-function rules:input( act, val ) -- ::void!
+function Rules:input( act, val ) -- ::void!
 	
 end
 
-function rules:transition( rules ) -- ::rules!
+function Rules:transition( State ) -- ::Rules!
+	if State == nil then
+		return self -- TODO change
+	end
+	new_state = State.new( self.screenmanager )
+	self:free()
+	return new_state
 end
 
-return rules
+return Rules
