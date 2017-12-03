@@ -15,18 +15,19 @@ function Gameover:free()
 end
 
 function Gameover:update( dt ) -- ::Gameover_id!
+
 end
 
 function Gameover:draw( ) -- ::void!
-	local x,y,r
+	local x,y
 	x, y = 100,100
-	--r = self.shape:getRadius()
 	love.graphics.setColor(255,255,255)
 	love.graphics.draw(self.image, x, y, 0, 1, 1)
 	--print( x, y, r )
 end
 
 function Gameover:input( act, val ) -- ::void!
+	
 end
 
 function Gameover:transition( Gameover ) -- ::Gameover!
