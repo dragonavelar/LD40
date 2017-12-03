@@ -1,5 +1,3 @@
-require( "collisions" )
-
 local Location = {}
 Location.__index = Location
 Location.id = "location"

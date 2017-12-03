@@ -1,6 +1,5 @@
 require( "math" )
 require( "util" )
-require( "collisions" )
 
 local Patrol = {}
 Patrol.__index = Patrol

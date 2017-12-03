@@ -1,9 +1,11 @@
 require( "math" )
-require( "collisions" )
 
 local Follower = {}
 Follower.__index = Follower
 Follower.id = "follower"
+
+Follower.sprites = {}
+Follower.sprites.idle = love.graphics.newImage("assets/fanatic.png")
 
 function Follower.new(world, x, y, radius, maxspeed, linear_damping, angular_damping, mass, strenght, sight_radius) -- ::Follower
 	-- Variable initializations
@@ -84,8 +86,16 @@ function Follower:draw() -- ::void!
 	local x,y,r
 	x, y = self.body:getWorldPoint( self.shape:getPoint() )
 	r = self.shape:getRadius()
-	love.graphics.setColor(100,0,100)
-	love.graphics.circle('fill', x, y, r )
+	--love.graphics.setColor(100,0,100)
+	--love.graphics.circle('fill', x, y, r )
+
+	love.graphics.setColor(255,255,255)
+	local w = self.sprites.idle:getWidth()
+	local h = self.sprites.idle:getHeight()
+	local sw = 10*r/w -- TODO FIX MAGIC NUMBER
+	local sh = 10*r/h
+	love.graphics.draw( self.sprites.idle, x, y, 0, sw, sh, w/2, h/2 )
+	
 end
 
 function Follower:input(act,val) -- ::void!
@@ -95,6 +105,10 @@ function Follower:collide( other, collision )
 end
 
 function Follower:disable_collision( other, collision )
+end
+
+function Follower:get_center() -- ::(float, float)
+	return self.body:getWorldPoint( self.shape:getPoint() )
 end
 
 return Follower

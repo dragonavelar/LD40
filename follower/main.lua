@@ -70,17 +70,31 @@ function love.update( dt )
 	end
 end
 
+function sort_by_y(obj1, obj2)
+	local x1,y1 = obj1:get_center()
+	local x2,y2 = obj2:get_center()
+	return y1 < y2
+end
+
 function love.draw()
 	for k, v in pairs( locations ) do
 		v:draw()
 	end
+
+	local sorted = {}, {}
+	table.insert( sorted, player )
 	for k, v in pairs( followers ) do
-		v:draw()
+		table.insert( sorted, v )
 	end
 	for k, v in pairs( patrols ) do
-		v:draw()
+		table.insert( sorted, v )
 	end
 	player:draw()
+	
+	table.sort( sorted, sort_by_y )
+	for k, v in pairs( sorted ) do
+		v:draw()
+	end
 end
 
 

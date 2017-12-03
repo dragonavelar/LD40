@@ -1,5 +1,4 @@
 require( "math" )
-require( "collisions" )
 
 local Player = {}
 Player.__index = Player
@@ -94,11 +93,11 @@ end
 function Player:collide( other, collision )
 end
 
-function Player:get_center() -- ::(float, float)
-	return self.body:getWorldPoint( self.shape:getPoint() )
+function Player:disable_collision( other, collision )
 end
 
-function Player:disable_collision( other, collision )
+function Player:get_center() -- ::(float, float)
+	return self.body:getWorldPoint( self.shape:getPoint() )
 end
 
 return Player
