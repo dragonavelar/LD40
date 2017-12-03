@@ -142,7 +142,7 @@ function Ingame:transition( State ) -- ::Ingame!
 	if State == nil then
 		return self -- TODO change
 	end
-	new_state = State.new( self.screenmanager )
+	local new_state = State.load( self.screenmanager )
 	self:free()
 	return new_state
 end
