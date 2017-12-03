@@ -1,120 +1,35 @@
-require( "collisions" )
-local Player = require( "player" )
-local Follower = require( "follower" )
-local Patrol = require( "patrol" )
-local Location = require( "location" )
 local Screenmanager = require( "screenmanager" )
-local world = nil
+local Ingame = require( "ingame" )
 local screenmanager = nil
-local player = nil
-local followers = {}
-local patrols = {}
-local locations = {}
-
+local current_state = nil
 
 function love.load()
 	screenmanager = Screenmanager.new()
-	world = love.physics.newWorld()
-	world:setCallbacks(
-		collisions.beginContact,
-		collisions.endContact,
-		collisions.preSolve,
-		collisions.postSolve )
-	player = Player.new( world )
-	table.insert( followers, Follower.new( world, 2, 2 ) )
-
-	table.insert( locations, Location.new( world, patrols, Patrol, 9, 1 ) )
-	table.insert( locations, Location.new( world, patrols, Patrol, 12, 5 ) )
-	table.insert( locations, Location.new( world, patrols, Patrol, 1, 7 ) )
+	current_state = Ingame.load( screenmanager )
 end
 
 function love.update( dt )
-	if not player.alive then
-		print( "PERDEEEU" )
-		local counter = 0
-		for k, v in pairs( followers ) do
-			if v.alive then
-				counter = counter + 1
-			end
-		end
-		print( "Pontuacao: " .. counter )
-		love.event.quit()
+	local new_state = nil
+	new_state = current_state:update( dt )
+	if new_state ~= nil then
+		new_state = state:transition()
 	end
-	-- Updating
-	world:update( dt )
-	player:update( dt )
-	local px, py = player:get_center()
-	for k, v in pairs( followers ) do
-		if v.alive then
-			v:update( dt, px, py )
-		end
-	end
-	for k, v in pairs( patrols ) do
-		if v.alive then
-			v:update( dt, px, py )
-		end
-	end
-	for k, v in pairs( locations ) do
-		if v.alive then
-			v:update( dt, world, followers, Follower, patrols, Patrol )
-		end
-	end
-	-- Cleaning up
-	for k, v in pairs( followers ) do
-		if not v.alive then
-			v:free()
-			followers[ k ] = nil
-		end
-	end
-	for k, v in pairs( locations ) do
-		if not v.alive then
-			v:free()
-			followers[ k ] = nil
-		end
-	end
-	for k, v in pairs( patrols ) do
-		if not v.alive or v.parent == nil or not v.parent.alive then
-			v:free()
-			followers[ k ] = nil
-		end
-	end
-end
-
-function sort_by_y(obj1, obj2)
-	local x1,y1 = obj1:get_center()
-	local x2,y2 = obj2:get_center()
-	return y1 < y2
 end
 
 function love.draw()
-	for k, v in pairs( locations ) do
-		v:draw(screenmanager)
-	end
-
-	local sorted = {}, {}
-	table.insert( sorted, player )
-	for k, v in pairs( followers ) do
-		table.insert( sorted, v )
-	end
-	for k, v in pairs( patrols ) do
-		table.insert( sorted, v )
-	end
-	
-	table.sort( sorted, sort_by_y )
-	for k, v in pairs( sorted ) do
-		v:draw(screenmanager)
-	end
-
+	current_state:draw()
 	screenmanager:update( 1 )
 	screenmanager:draw()
 end
 
 
 function love.mousereleased( x, y, button, istouch )
-	if button == 1 then
-		sx, sy = screenmanager.getWorldPos( x, y )
-		table.insert( followers, Follower.new( world, sx, sy ) )
-	end
+	local vals = {}
+	vals["button"] = button
+	vals["x"] = x
+	vals["y"] = y
+	vals["istouch"] = istouch
+	current_state:input( "mousereleased", vals )
 end
 
 
