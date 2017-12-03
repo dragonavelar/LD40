@@ -17,8 +17,10 @@ end
 function Gameover:free()
 end
 
-function Gameover:update( dt ) -- ::Gameover_id!
-	
+function Gameover:update( dt ) -- ::Gameover_id!	
+	if new_state == "Ingame" then
+		new_state = current:transition( Ingame )
+	end
 end
 
 function Gameover:draw( ) -- ::void!
@@ -34,6 +36,9 @@ end
 function Gameover:input( act, val ) -- ::void!
 	if act == "mousereleased" then
 		--call transition to main menu
+		if val["button"] == 1 then
+			new_state = "Ingame"
+		end
 	end
 
 	if act == "keyreleased" then
