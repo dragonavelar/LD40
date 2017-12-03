@@ -5,12 +5,17 @@ Gameover.state_id = 'Gameover'
 function Gameover.load( screenmanager ) -- ::Gameover
 	-- Variable initializations
 	-- Class stuff
+	
 	local self = setmetatable( {}, Gameover )
+
 	self.screenmanager = screenmanager
 	self.image = love.graphics.newImage( "assets/gameover.png" )
 	
 	self.font = love.graphics.newFont("assets/rosicrucian.ttf")
 	self.text = love.graphics.newText(self.font, 'Press any key to restart')
+
+	self.quit = false
+	
 	return self
 end
 
@@ -18,8 +23,8 @@ function Gameover:free()
 end
 
 function Gameover:update( dt ) -- ::Gameover_id!	
-	if new_state == "Ingame" then
-		new_state = current:transition( Ingame )
+	if self.quit == true then
+		return "ingame"
 	end
 end
 
@@ -37,7 +42,7 @@ function Gameover:input( act, val ) -- ::void!
 	if act == "mousereleased" then
 		--call transition to main menu
 		if val["button"] == 1 then
-			new_state = "Ingame"
+			self.quit = true
 		end
 	end
 
