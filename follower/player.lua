@@ -5,18 +5,19 @@ Player.__index = Player
 Player.id = "player"
 Player.sprites = {}
 Player.sprites.idle = love.graphics.newImage("assets/player.png")
+Player.sprites.pxpm = 1024
 
 
 function Player.new(world, x, y, radius, maxspeed, linear_damping, angular_damping, mass, strenght) -- ::Player
 	-- Variable initializations
-	x = x or 0
-	y = y or 0
-	radius = radius or 12
-	maxspeed = maxspeed or 220
+	x = x or 5
+	y = y or 5
+	radius = radius or 0.4
+	maxspeed = maxspeed or 1.2
 	linear_damping = linear_damping or 5
 	angular_damping = angular_damping or 1
-	mass = mass or 0.2 -- So dense, wow. o:
-	strenght = strenght or 200
+	mass = mass or 1 -- So dense, wow. o:
+	strenght = strenght or 0.02
 	-- Class stuff
 	local self = setmetatable( {}, Player )
 	-- Physics stuff
@@ -77,21 +78,23 @@ function Player:update(dt) -- ::void!
 	end
 end
 
-function Player:draw() -- ::void!
+function Player:draw( screenmanager ) -- ::void!
+	local sm = screenmanager
 	local x,y,r
 	x, y = self.body:getWorldPoint( self.shape:getPoint() )
+	x, y = sm:getScreenPos( x, y )
 	r = self.shape:getRadius()
-	--love.graphics.setColor(100,0,0)
-	--love.graphics.circle('fill', x, y, r )
+	r = sm:getLength( r )
+	love.graphics.setColor(100,0,0)
+	love.graphics.circle('fill', x, y, r )
 
 	love.graphics.setColor(255,255,255)
 	local dir = self.last_direction
 	local w = self.sprites.idle:getWidth()
 	local h = self.sprites.idle:getHeight()
-	local sw = 10*r/w -- TODO FIX MAGIC NUMBER
-	local sh = 10*r/h
+	local sw = screenmanager:getScaleFactor( self.sprites.idle:getWidth(), self.sprites.idle:getWidth() / self.sprites.pxpm )
+	local sh = screenmanager:getScaleFactor( self.sprites.idle:getWidth(), self.sprites.idle:getWidth() / self.sprites.pxpm )
 	love.graphics.draw( self.sprites.idle, x, y, 0, dir * sw, sh, w/2, h/2 )
-
 end
 
 function Player:input(act,val) -- ::void!

@@ -3,7 +3,9 @@ local Player = require( "player" )
 local Follower = require( "follower" )
 local Patrol = require( "patrol" )
 local Location = require( "location" )
+local Screenmanager = require( "screenmanager" )
 local world = nil
+local screenmanager = nil
 local player = nil
 local followers = {}
 local patrols = {}
@@ -11,6 +13,7 @@ local locations = {}
 
 
 function love.load()
+	screenmanager = Screenmanager.new()
 	world = love.physics.newWorld()
 	world:setCallbacks(
 		collisions.beginContact,
@@ -18,11 +21,11 @@ function love.load()
 		collisions.preSolve,
 		collisions.postSolve )
 	player = Player.new( world )
-	table.insert( followers, Follower.new( world, 100, 100 ) )
+	table.insert( followers, Follower.new( world, 2, 2 ) )
 
-	table.insert( locations, Location.new( world, patrols, Patrol, 150, 50 ) )
-	table.insert( locations, Location.new( world, patrols, Patrol, 300, 200 ) )
-	table.insert( locations, Location.new( world, patrols, Patrol, 400, 600 ) )
+	table.insert( locations, Location.new( world, patrols, Patrol, 9, 1 ) )
+	table.insert( locations, Location.new( world, patrols, Patrol, 12, 5 ) )
+	table.insert( locations, Location.new( world, patrols, Patrol, 1, 7 ) )
 end
 
 function love.update( dt )
@@ -78,7 +81,7 @@ end
 
 function love.draw()
 	for k, v in pairs( locations ) do
-		v:draw()
+		v:draw(screenmanager)
 	end
 
 	local sorted = {}, {}
@@ -89,18 +92,21 @@ function love.draw()
 	for k, v in pairs( patrols ) do
 		table.insert( sorted, v )
 	end
-	player:draw()
 	
 	table.sort( sorted, sort_by_y )
 	for k, v in pairs( sorted ) do
-		v:draw()
+		v:draw(screenmanager)
 	end
+
+	screenmanager:update( 1 )
+	screenmanager:draw()
 end
 
 
 function love.mousereleased( x, y, button, istouch )
 	if button == 1 then
-		table.insert( followers, Follower.new( world, x, y ) )
+		sx, sy = screenmanager.getWorldPos( x, y )
+		table.insert( followers, Follower.new( world, sx, sy ) )
 	end
 end
 

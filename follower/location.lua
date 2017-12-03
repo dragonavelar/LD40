@@ -6,8 +6,8 @@ function Location.new( world, patrols, Patrol, x, y, w, h, cooldown ) -- ::Locat
 	-- Variable initializations
 	x = x or 0
 	y = y or 0
-	w = w or 10
-	h = h or 10
+	w = w or 1.5
+	h = h or 0.25
 	cooldown = cooldown or 5
 	-- Class stuff
 	local self = setmetatable( {}, Location )
@@ -51,13 +51,19 @@ function Location:update(dt, world, followers, Follower, patrols, Patrol ) -- ::
 	end
 end
 
-function Location:draw() -- ::void!
+function Location:draw( screenmanager ) -- ::void!
+	local sm = screenmanager
 	if self.cooldown_timer < self.cooldown then
 		love.graphics.setColor( 200, 200, 200 )
 	else
 		love.graphics.setColor( 255, 255, 255 )
 	end
-	love.graphics.polygon( 'fill', self.body:getWorldPoints( self.shape:getPoints() ) )
+	local x1,y1,x2,y2,x3,y3,x4,y4 = self.body:getWorldPoints( self.shape:getPoints() )
+	x1,y1 = sm:getScreenPos( x1, y1 )
+	x2,y2 = sm:getScreenPos( x2, y2 )
+	x3,y3 = sm:getScreenPos( x3, y3 )
+	x4,y4 = sm:getScreenPos( x4, y4 )
+	love.graphics.polygon( 'fill', x1,y1,x2,y2,x3,y3,x4,y4 )
 end
 
 function Location:input( act, val ) -- ::void!

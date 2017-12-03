@@ -6,18 +6,19 @@ Follower.id = "follower"
 
 Follower.sprites = {}
 Follower.sprites.idle = love.graphics.newImage("assets/fanatic.png")
+Follower.sprites.pxpm = 1024
 
 function Follower.new(world, x, y, radius, maxspeed, linear_damping, angular_damping, mass, strenght, sight_radius) -- ::Follower
 	-- Variable initializations
 	x = x or 0
 	y = y or 0
-	radius = radius or 10
-	maxspeed = maxspeed or 200
-	linear_damping = linear_damping or 3
+	radius = radius or 0.5
+	maxspeed = maxspeed or 0.9
+	linear_damping = linear_damping or 5
 	angular_damping = angular_damping or 1
-	mass = mass or 0.05 -- So dense, wow. o:
-	strenght = strenght or 30
-	sight_radius = sight_radius or 10 * radius
+	mass = mass or 0.5 -- So dense, wow. o:
+	strenght = strenght or 0.01
+	sight_radius = sight_radius or 2 + radius
 	-- Class stuff
 	local self = setmetatable( {}, Follower )
 	-- Physics stuff
@@ -88,19 +89,22 @@ function Follower:update(dt, target_x, target_y) -- ::void!
 	end
 end
 
-function Follower:draw() -- ::void!
+function Follower:draw( screenmanager ) -- ::void!
+	local sm = screenmanager
 	local x,y,r
 	x, y = self.body:getWorldPoint( self.shape:getPoint() )
+	x, y = sm:getScreenPos( x, y )
 	r = self.shape:getRadius()
-	--love.graphics.setColor(100,0,100)
-	--love.graphics.circle('fill', x, y, r )
+	r = sm:getLength( r )
+	love.graphics.setColor(100,0,100)
+	love.graphics.circle('fill', x, y, r )
 
 	love.graphics.setColor(255,255,255)
 	local dir = self.last_direction
 	local w = self.sprites.idle:getWidth()
 	local h = self.sprites.idle:getHeight()
-	local sw = 10*r/w -- TODO FIX MAGIC NUMBER
-	local sh = 10*r/h
+	local sw = screenmanager:getScaleFactor( self.sprites.idle:getWidth(), self.sprites.idle:getWidth() / self.sprites.pxpm )
+	local sh = screenmanager:getScaleFactor( self.sprites.idle:getWidth(), self.sprites.idle:getWidth() / self.sprites.pxpm )
 	love.graphics.draw( self.sprites.idle, x, y, 0, dir * sw, sh, w/2, h/2 )
 end
 

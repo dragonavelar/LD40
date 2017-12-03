@@ -6,6 +6,7 @@ Patrol.__index = Patrol
 Patrol.id = "patrol"
 Patrol.sprites = {}
 Patrol.sprites.idle = love.graphics.newImage("assets/broman.png")
+Patrol.sprites.pxpm = 1024
 
 Patrol.PATROL_STATE = "patrolling"
 Patrol.CHASE_STATE = "chasing"
@@ -14,14 +15,14 @@ function Patrol.new(world, parent_location, x, y, radius, patrol_radius, maxspee
 	-- Variable initializations
 	x = x or 0
 	y = y or 0
-	radius = radius or 10
-	maxspeed = maxspeed or 200
-	linear_damping = linear_damping or 3
+	radius = radius or 0.6
+	maxspeed = maxspeed or 1
+	linear_damping = linear_damping or 5
 	angular_damping = angular_damping or 1
-	mass = mass or 0.05 -- So dense, wow. o:
-	strenght = strenght or 30
-	sight_radius = sight_radius or 10 * radius
-	patrol_radius = patrol_radius or 100
+	mass = mass or 2 -- So dense, wow. o:
+	strenght = strenght or 0.01
+	sight_radius = sight_radius or 4 + radius
+	patrol_radius = patrol_radius or 10
 	-- Class stuff
 	local self = setmetatable( {}, Patrol )
 	-- Physics stuff
@@ -104,19 +105,23 @@ function Patrol:update(dt, target_x, target_y) -- ::void!
 	end
 end
 
-function Patrol:draw() -- ::void!
+function Patrol:draw( screenmanager ) -- ::void!
+	local sm = screenmanager
 	local x,y,r
 	x, y = self.body:getWorldPoint( self.shape:getPoint() )
+	x, y = sm:getScreenPos( x, y )
 	r = self.shape:getRadius()
-	--love.graphics.setColor(0,128,0)
-	--love.graphics.circle('fill', x, y, r )
+	r = sm:getLength( r )
+	love.graphics.setColor(0,128,0)
+	love.graphics.circle('fill', x, y, r )
+
 
 	love.graphics.setColor(255,255,255)
-	local dir = -self.last_direction -- FIXME: Bro is on the opposite direction
+	local dir = -self.last_direction
 	local w = self.sprites.idle:getWidth()
 	local h = self.sprites.idle:getHeight()
-	local sw = 10*r/w -- TODO FIX MAGIC NUMBER
-	local sh = 10*r/h
+	local sw = screenmanager:getScaleFactor( self.sprites.idle:getWidth(), self.sprites.idle:getWidth() / self.sprites.pxpm )
+	local sh = screenmanager:getScaleFactor( self.sprites.idle:getWidth(), self.sprites.idle:getWidth() / self.sprites.pxpm )
 	love.graphics.draw( self.sprites.idle, x, y, 0, dir * sw, sh, w/2, h/2 )
 end
 

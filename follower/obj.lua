@@ -38,7 +38,8 @@ end
 function Obj:update(dt) -- ::void!
 end
 
-function Obj:draw() -- ::void!
+function Obj:draw( screenmanager ) -- ::void!
+	local sm = screenmanager
 	love.graphics.setColor( 100, 0, 0 )
 	love.graphics.polygon( 'fill', self.body:getWorldPoints( self.shape:getPoints() ) )
 end
