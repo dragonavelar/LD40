@@ -42,6 +42,11 @@ function Player.new(world, x, y, radius, maxspeed, linear_damping, angular_dampi
 	self.walk_x = 0
 	self.walk_y = 0
 
+	self.key_w = false
+	self.key_a = false
+	self.key_s = false
+	self.key_d = false
+
 	self.throw_fish_cooldown = 3
 	self.throw_fish_cooldown_timer = 3
 	self.fish_target_x = nil
@@ -116,24 +121,48 @@ function Player:input(act,val) -- ::void!
 			self.throw_fish_cooldown = 0
 		end
 	elseif act == "keypressed" then
-		if val["scancode"] == "w" or val["scancode"] == "up" then
-			self.walk_y = self.walk_y - 1
-		elseif val["scancode"] == "s" or val["scancode"] == "down" then
-			self.walk_y = self.walk_y + 1
-		elseif val["scancode"] == "a" or val["scancode"] == "left" then
-			self.walk_x = self.walk_x - 1
-		elseif val["scancode"] == "d" or val["scancode"] == "right" then
-			self.walk_x = self.walk_x + 1
+		if ( val["scancode"] == "w" or val["scancode"] == "up" ) then
+			if not self.key_w then
+				self.walk_y = self.walk_y - 1
+				self.key_w = true
+			end
+		elseif ( val["scancode"] == "s" or val["scancode"] == "down" ) then
+			if not self.key_s then
+				self.walk_y = self.walk_y + 1
+				self.key_s = true
+			end
+		elseif ( val["scancode"] == "a" or val["scancode"] == "left" ) then
+			if not self.key_a then
+				self.walk_x = self.walk_x - 1
+				self.key_a = true
+			end
+		elseif ( val["scancode"] == "d" or val["scancode"] == "right" ) then
+			if not self.key_d then
+				self.walk_x = self.walk_x + 1
+				self.key_d = true
+			end
 		end
 	elseif act == "keyreleased" then
-		if val["scancode"] == "w" or val["scancode"] == "up" then
-			self.walk_y = self.walk_y + 1
-		elseif val["scancode"] == "s" or val["scancode"] == "down" then
-			self.walk_y = self.walk_y - 1
-		elseif val["scancode"] == "a" or val["scancode"] == "left" then
-			self.walk_x = self.walk_x + 1
-		elseif val["scancode"] == "d" or val["scancode"] == "right" then
-			self.walk_x = self.walk_x - 1
+		if ( val["scancode"] == "w" or val["scancode"] == "up" ) and self.walk_y <= 0 then
+			if self.key_w then
+				self.walk_y = self.walk_y + 1
+				self.key_w = false
+			end
+		elseif ( val["scancode"] == "s" or val["scancode"] == "down" ) and self.walk_y >= 0 then
+			if self.key_s then
+				self.walk_y = self.walk_y - 1
+				self.key_s = false
+			end
+		elseif ( val["scancode"] == "a" or val["scancode"] == "left" ) and self.walk_x <= 0 then
+			if self.key_a then
+				self.walk_x = self.walk_x + 1
+				self.key_a = false
+			end
+		elseif ( val["scancode"] == "d" or val["scancode"] == "right" ) and self.walk_x >= 0 then
+			if self.key_d then
+				self.walk_x = self.walk_x - 1
+				self.key_d = false
+			end
 		end
 	end
 end

@@ -63,9 +63,14 @@ function Gameover:draw( ) -- ::void!
 end
 
 function Gameover:input( act, val ) -- ::void!
-	if act == "mousereleased" or act == "keyreleased" then
-		--call transition to main menu
-		if val["button"] == 1 then
+	if act == "mousereleased" or act == "mousepressed" or act == "keypressed" then
+		self.quit = true
+	elseif act == "keyreleased" then
+		if val["scancode"] ~= "w"
+			and val["scancode"] ~= "s"
+			and val["scancode"] ~= "a"
+			and val["scancode"] ~= "d"
+		then
 			self.quit = true
 		end
 	end

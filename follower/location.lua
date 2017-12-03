@@ -56,7 +56,7 @@ function Location:draw( screenmanager ) -- ::void!
 	if self.cooldown_timer < self.cooldown then
 		love.graphics.setColor( 200, 200, 200 )
 	else
-		love.graphics.setColor( 255, 255, 255 )
+		love.graphics.setColor( 0, 0, 0 )
 	end
 	local x1,y1,x2,y2,x3,y3,x4,y4 = self.body:getWorldPoints( self.shape:getPoints() )
 	x1,y1 = sm:getScreenPos( x1, y1 )
