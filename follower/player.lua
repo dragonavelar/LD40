@@ -1,4 +1,5 @@
 require( "math" )
+local Fish = require( "fish" )
 
 local Player = {}
 Player.__index = Player

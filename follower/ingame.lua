@@ -30,6 +30,7 @@ function Ingame.load( screenmanager, extra ) -- ::Ingame
 	self.followers = {}
 	self.patrols = {}
 	self.locations = {}
+	self.Fishes = {}
 	self.Gameover = Gameover
 
 	self.world = love.physics.newWorld()
