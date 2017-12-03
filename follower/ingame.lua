@@ -132,12 +132,10 @@ function Ingame:draw() -- ::void!
 end
 
 function Ingame:input( act, val ) -- ::void!
-	if act == "mousereleased" then
-		if val["button"] == 1 then
-			local sx, sy = self.screenmanager:getWorldPos( val["x"], val["y"] )
-			table.insert( self.followers, self.Follower.new( self.world, sx, sy ) )
-		end
+	if act == "mousereleased" or act == "mousepressed" then
+		val["x"], val["y"] = self.screenmanager:getWorldPos( val["x"], val["y"] )
 	end
+	self.player:input( act, val )
 end
 
 function Ingame:transition( State ) -- ::Ingame!

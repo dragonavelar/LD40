@@ -38,6 +38,15 @@ function Player.new(world, x, y, radius, maxspeed, linear_damping, angular_dampi
 	self.stronkness = strenght -- So stronk
 	self.alive = true
 	self.last_direction = 1
+
+	self.walk_x = 0
+	self.walk_y = 0
+
+	self.throw_fish_cooldown = 3
+	self.throw_fish_cooldown_timer = 3
+	self.fish_target_x = nil
+	self.fish_target_y = nil
+
 	return self
 end
 
@@ -53,11 +62,7 @@ end
 
 function Player:update(dt) -- ::void!
 	-- Apply movement
-	local fx, fy = 0, 0
-	if love.keyboard.isScancodeDown( "w", "up" ) then fy = fy - 1 end
-	if love.keyboard.isScancodeDown( "s", "down" ) then fy = fy + 1 end
-	if love.keyboard.isScancodeDown( "a", "left" ) then fx = fx - 1 end
-	if love.keyboard.isScancodeDown( "d", "right" ) then fx = fx + 1 end
+	local fx, fy = self.walk_x, self.walk_y
 	local f = math.sqrt( fx*fx + fy*fy )
 	if f == 0 then f = 1 end
 	fx = self.stronkness * fx / f
@@ -98,6 +103,31 @@ function Player:draw( screenmanager ) -- ::void!
 end
 
 function Player:input(act,val) -- ::void!
+	if act == "mousepressed" then
+		if self.throw_fish_cooldown_timer >= self.throw_fish_cooldown then
+			self.fish_target_x, self.fish_target_y = val["x"], val["y"]
+		end
+	elseif act == "keypressed" then
+		if val["scancode"] == "w" or val["scancode"] == "up" then
+			self.walk_y = self.walk_y - 1
+		elseif val["scancode"] == "s" or val["scancode"] == "down" then
+			self.walk_y = self.walk_y + 1
+		elseif val["scancode"] == "a" or val["scancode"] == "left" then
+			self.walk_x = self.walk_x - 1
+		elseif val["scancode"] == "d" or val["scancode"] == "right" then
+			self.walk_x = self.walk_x + 1
+		end
+	elseif act == "keyreleased" then
+		if val["scancode"] == "w" or val["scancode"] == "up" then
+			self.walk_y = self.walk_y + 1
+		elseif val["scancode"] == "s" or val["scancode"] == "down" then
+			self.walk_y = self.walk_y - 1
+		elseif val["scancode"] == "a" or val["scancode"] == "left" then
+			self.walk_x = self.walk_x + 1
+		elseif val["scancode"] == "d" or val["scancode"] == "right" then
+			self.walk_x = self.walk_x - 1
+		end
+	end
 end
 
 function Player:collide( other, collision )
