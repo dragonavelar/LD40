@@ -21,7 +21,7 @@ function Gameover:draw( ) -- ::void!
 	local x,y,r
 	x, y = 100,100
 	--r = self.shape:getRadius()
-	--love.graphics.setColor(100,0,0)
+	love.graphics.setColor(255,255,255)
 	love.graphics.draw(self.image, x, y, 0, 1, 1)
 	--print( x, y, r )
 end
