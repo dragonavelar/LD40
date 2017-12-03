@@ -36,6 +36,7 @@ function Player.new(world, x, y, radius, maxspeed, linear_damping, angular_dampi
 	-- Object variables
 	self.stronkness = strenght -- So stronk
 	self.alive = true
+	self.last_direction = 1
 	return self
 end
 
@@ -69,6 +70,11 @@ function Player:update(dt) -- ::void!
 		vx = self.maxspeed * vx / v
 		vy = self.maxspeed * vy / v
 	end
+	if vx > 0 then
+		self.last_direction = 1
+	elseif vx < 0 then
+		self.last_direction = -1
+	end
 end
 
 function Player:draw() -- ::void!
@@ -79,11 +85,12 @@ function Player:draw() -- ::void!
 	--love.graphics.circle('fill', x, y, r )
 
 	love.graphics.setColor(255,255,255)
+	local dir = self.last_direction
 	local w = self.sprites.idle:getWidth()
 	local h = self.sprites.idle:getHeight()
 	local sw = 10*r/w -- TODO FIX MAGIC NUMBER
 	local sh = 10*r/h
-	love.graphics.draw( self.sprites.idle, x, y, 0, sw, sh, w/2, h/2 )
+	love.graphics.draw( self.sprites.idle, x, y, 0, dir * sw, sh, w/2, h/2 )
 
 end
 

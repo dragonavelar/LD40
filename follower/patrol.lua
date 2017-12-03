@@ -4,6 +4,8 @@ require( "util" )
 local Patrol = {}
 Patrol.__index = Patrol
 Patrol.id = "patrol"
+Patrol.sprites = {}
+Patrol.sprites.idle = love.graphics.newImage("assets/broman.png")
 
 Patrol.PATROL_STATE = "patrolling"
 Patrol.CHASE_STATE = "chasing"
@@ -39,6 +41,7 @@ function Patrol.new(world, parent_location, x, y, radius, patrol_radius, maxspee
 	-- Object variables
 	self.stronkness = strenght -- So stronk
 	self.sight_radius = sight_radius
+	self.last_direction = 1
 	self.alive = true
 	self.parent = parent_location
 	self.patrol_radius = patrol_radius
@@ -94,14 +97,27 @@ function Patrol:update(dt, target_x, target_y) -- ::void!
 		vx = self.maxspeed * vx / v
 		vy = self.maxspeed * vy / v
 	end
+	if vx > 0 then
+		self.last_direction = 1
+	elseif vx < 0 then
+		self.last_direction = -1
+	end
 end
 
 function Patrol:draw() -- ::void!
 	local x,y,r
 	x, y = self.body:getWorldPoint( self.shape:getPoint() )
 	r = self.shape:getRadius()
-	love.graphics.setColor(0,128,0)
-	love.graphics.circle('fill', x, y, r )
+	--love.graphics.setColor(0,128,0)
+	--love.graphics.circle('fill', x, y, r )
+
+	love.graphics.setColor(255,255,255)
+	local dir = -self.last_direction -- FIXME: Bro is on the opposite direction
+	local w = self.sprites.idle:getWidth()
+	local h = self.sprites.idle:getHeight()
+	local sw = 10*r/w -- TODO FIX MAGIC NUMBER
+	local sh = 10*r/h
+	love.graphics.draw( self.sprites.idle, x, y, 0, dir * sw, sh, w/2, h/2 )
 end
 
 function Patrol:input(act,val) -- ::void!
