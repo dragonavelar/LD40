@@ -4,6 +4,9 @@ require( "collisions" )
 local Player = {}
 Player.__index = Player
 Player.id = "player"
+Player.sprites = {}
+Player.sprites.idle = love.graphics.newImage("assets/player.png")
+
 
 function Player.new(world, x, y, radius, maxspeed, linear_damping, angular_damping, mass, strenght) -- ::Player
 	-- Variable initializations
@@ -73,8 +76,16 @@ function Player:draw() -- ::void!
 	local x,y,r
 	x, y = self.body:getWorldPoint( self.shape:getPoint() )
 	r = self.shape:getRadius()
-	love.graphics.setColor(100,0,0)
-	love.graphics.circle('fill', x, y, r )
+	--love.graphics.setColor(100,0,0)
+	--love.graphics.circle('fill', x, y, r )
+
+	love.graphics.setColor(255,255,255)
+	local w = self.sprites.idle:getWidth()
+	local h = self.sprites.idle:getHeight()
+	local sw = 10*r/w -- TODO FIX MAGIC NUMBER
+	local sh = 10*r/h
+	love.graphics.draw( self.sprites.idle, x, y, 0, sw, sh, w/2, h/2 )
+
 end
 
 function Player:input(act,val) -- ::void!
