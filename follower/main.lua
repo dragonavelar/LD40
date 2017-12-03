@@ -33,8 +33,28 @@ function love.mousereleased( x, y, button, istouch )
 	current_state:input( "mousereleased", vals )
 end
 
+function love.mousepressed( x, y, button, istouch )
+	local vals = {}
+	vals["button"] = button
+	vals["x"] = x
+	vals["y"] = y
+	vals["istouch"] = istouch
+	current_state:input( "mousepressed", vals )
+end
 
+function love.keypressed( key, scancode )
+	local vals = {}
+	vals["key"] = key
+	vals["scancode"] = scancode
+	current_state:input( "keypressed", vals )
+end
 
+function love.keyreleased( key, scancode )
+	local vals = {}
+	vals["key"] = key
+	vals["scancode"] = scancode
+	current_state:input( "keyreleased", vals )
+end
 
 
 
