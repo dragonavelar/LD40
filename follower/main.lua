@@ -6,7 +6,7 @@ local current_state = nil
 
 function love.load()
 	screenmanager = Screenmanager.new()
-	current_state = Gameover.load( screenmanager )
+	current_state = Ingame.load( screenmanager )
 end
 
 function love.update( dt )
