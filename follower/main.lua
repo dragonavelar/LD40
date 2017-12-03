@@ -1,11 +1,12 @@
 local Screenmanager = require( "screenmanager" )
 local Ingame = require( "ingame" )
+local Gameover = require( "gameover" )
 local screenmanager = nil
 local current_state = nil
 
 function love.load()
 	screenmanager = Screenmanager.new()
-	current_state = Ingame.load( screenmanager )
+	current_state = Gameover.load( screenmanager )
 end
 
 function love.update( dt )
