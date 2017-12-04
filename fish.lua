@@ -6,6 +6,10 @@ Fish.sprites = {}
 Fish.sprites.idle = love.graphics.newImage("assets/dead_fish.png")
 Fish.sprites.pxpm = 1024
 
+Fish.audios = {}
+Fish.audios.splats = { love.audio.newSource( "assets/audio/splat1.ogg", "static" ), love.audio.newSource( "assets/audio/splat2.ogg", "static" ) }
+Fish.audios.thrown = love.audio.newSource( "assets/audio/throw.ogg", "static" )
+
 function Fish.new( world, x, y, ix, iy, imod, ir, radius, maxspeed, linear_damping, angular_damping, mass ) -- ::Fish
 	-- Variable initializations
 	imod = imod or 0.002
@@ -34,10 +38,12 @@ function Fish.new( world, x, y, ix, iy, imod, ir, radius, maxspeed, linear_dampi
 	self.live_time = 5.0
 	self.linear_damping = linear_damping
 	self.angular_damping = angular_damping
+	self.splatted = false
 
 	ix, iy = util.normalize( ix, iy )
 	self.body:applyLinearImpulse( ix * imod, iy * imod )
 	self.body:applyAngularImpulse( ir )
+	self.audios.thrown:play()
 	return self
 end
 
@@ -61,6 +67,10 @@ function Fish:update(dt) -- ::void!
 	if self.fly_time > 0 then
 		self.fly_time = self.fly_time - dt
 	else
+		if not self.splatted then
+			self.splatted = true
+			self.audios.splats[ math.random(2) ]:play()
+		end
 		self.body:setLinearDamping( self.linear_damping )
 		self.body:setAngularDamping( self.angular_damping )
 	end

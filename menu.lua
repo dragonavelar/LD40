@@ -39,7 +39,7 @@ function menu:draw( ) -- ::void!
 	love.graphics.rectangle( "fill", x, y, sm:getLength( sm.meter_w ), sm:getLength( sm.meter_h ) )
 
 	local w = sm:getLength( sm.meter_w * 14/16 ) / sw
-	love.graphics.setColor(250, 235, 215, 255)
+	love.graphics.setColor(255, 255, 255)
 	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 1/9 )
 	love.graphics.printf( "ULTRA MESUS VS BROMANS", x, y, w/2, "center", 0, 2*sw, 2*sh )
 

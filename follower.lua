@@ -9,6 +9,9 @@ Follower.sprites = {}
 Follower.sprites.idle = { love.graphics.newImage("assets/fanatic.png"), love.graphics.newImage("assets/fanatic_alternative.png") }
 Follower.sprites.pxpm = 1024
 
+Follower.audios = {}
+Follower.audios.oohs = { love.audio.newSource( "assets/audio/fanatic1.ogg", "static" ), love.audio.newSource( "assets/audio/fanatic2.ogg", "static" ) , love.audio.newSource( "assets/audio/fanatic3.ogg", "static" ) }
+
 function Follower.new(world, x, y, type, radius, maxspeed, linear_damping, angular_damping, mass, strenght, sight_radius) -- ::Follower
 	-- Variable initializations
 	x = x or 0
@@ -43,6 +46,10 @@ function Follower.new(world, x, y, type, radius, maxspeed, linear_damping, angul
 	self.last_direction = 1
 	self.type = type
 	self.alive = true
+	
+	self.oohed = false
+	self.audio_cooldown = 2
+	self.audio_cooldown_timer = 0
 	return self
 end
 
@@ -65,6 +72,8 @@ function Follower:update( dt, target_x, target_y, fishes ) -- ::void!
 	-- Apply movement
 	local x, y = self.body:getWorldPoint( self.shape:getPoint() )
 	local fx, fy = 0,0
+	local saw_mesus = false
+
 	if ( target_x ~= nil and target_y ~= nil )
 		and
 		( x ~= target_x and y ~= target_y )
@@ -75,6 +84,7 @@ function Follower:update( dt, target_x, target_y, fishes ) -- ::void!
 		if f > self.sight_radius then
 			fx, fy = 0, 0
 		else
+			saw_mesus = true
 			fx = self.stronkness * fx / f
 			fy = self.stronkness * fy / f
 		end
@@ -86,11 +96,25 @@ function Follower:update( dt, target_x, target_y, fishes ) -- ::void!
 			local ff = util.vec2dmod( ffx, ffy )
 			if ff == 0 then ff = 1 end
 			if ff <= self.sight_radius then
+				saw_mesus = false
 				fx = self.stronkness * ffx / ff
 				fy = self.stronkness * ffy / ff
 			end
 			v:update( dt, px, py, fishes )
 		end
+	end
+
+	if self.audio_cooldown_timer > 0 then
+		self.audio_cooldown_timer = self.audio_cooldown_timer - dt
+	end
+
+	if saw_mesus then
+		if not self.oohed then 
+			self.oohed = true
+			self.audios.oohs[ math.random(3) ]:play()
+		end
+	elseif self.oohed and self.audio_cooldown_timer <= 0 then
+		self.oohed = false
 	end
 	
 	self.body:applyForce( fx, fy )

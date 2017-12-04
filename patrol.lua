@@ -8,6 +8,9 @@ Patrol.sprites = {}
 Patrol.sprites.idle = love.graphics.newImage("assets/broman.png")
 Patrol.sprites.pxpm = 1024
 
+Patrol.audios = {}
+Patrol.audios.barks = { love.audio.newSource( "assets/audio/broman1.ogg", "static" ), love.audio.newSource( "assets/audio/broman2.ogg", "static" ) , love.audio.newSource( "assets/audio/broman3.ogg", "static" ) }
+
 Patrol.PATROL_STATE = "patrolling"
 Patrol.CHASE_STATE = "chasing"
 
@@ -52,6 +55,10 @@ function Patrol.new(world, parent_location, x, y, radius, patrol_radius, maxspee
 	self.objective_distance_threshold  = radius
 	self.state = Patrol.PATROL_STATE
 	self.passing_through = 0
+
+	self.barked = false
+	self.audio_cooldown = 2
+	self.audio_cooldown_timer = 0
 	return self
 end
 
@@ -76,10 +83,20 @@ function Patrol:update(dt, target_x, target_y) -- ::void!
 			self.state = Patrol.CHASE_STATE
 		end
 	end
+	if self.audio_cooldown_timer > 0 then
+		self.audio_cooldown_timer = self.audio_cooldown_timer - dt
+	end
 
 	if self.state == Patrol.CHASE_STATE then
+		if not self.barked then 
+			self.barked = true
+			self.audios.barks[ math.random(3) ]:play()
+		end
 		self:force_towards( target_x, target_y )
 	elseif self.state == Patrol.PATROL_STATE then
+		if self.barked and self.audio_cooldown_timer <= 0 then
+			self.barked = false
+		end
 		self:force_towards( self.patrol_x, self.patrol_y )
 		if util.dist2dmod( x, y, self.patrol_x, self.patrol_y ) < self.objective_distance_threshold then
 			local r = math.random() * self.patrol_radius
