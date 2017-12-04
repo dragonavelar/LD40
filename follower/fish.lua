@@ -8,12 +8,12 @@ Fish.sprites.pxpm = 1024
 
 function Fish.new( world, x, y, ix, iy, imod, ir, radius, maxspeed, linear_damping, angular_damping, mass ) -- ::Fish
 	-- Variable initializations
-	imod = imod or 0.001
-	ir = ir or 1
+	imod = imod or 0.0013
+	ir = ir or 0.0001
 	radius = radius or 0.2
 	maxspeed = maxspeed or 2.0
 	linear_damping = linear_damping or 10
-	angular_damping = angular_damping or 2
+	angular_damping = angular_damping or 10
 	mass = mass or 0.1 -- So dense, wow. o:
 	-- Class stuff
 	local self = setmetatable( {}, Fish )

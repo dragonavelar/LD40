@@ -161,9 +161,14 @@ function Ingame:draw() -- ::void!
 	end
 
 	local sorted = {}
+	local flying = {}
 	table.insert( sorted, self.player )
 	for k, v in pairs( self.fishes ) do
-		table.insert( sorted, v )
+		if v.fly_time and v.fly_time > 0 then
+			table.insert( flying, v )
+		else
+			table.insert( sorted, v )
+		end
 	end
 	for k, v in pairs( self.followers ) do
 		table.insert( sorted, v )
@@ -174,6 +179,10 @@ function Ingame:draw() -- ::void!
 	
 	table.sort( sorted, Ingame.sort_by_y )
 	for k, v in pairs( sorted ) do
+		v:draw( self.screenmanager )
+	end
+
+	for k, v in pairs( flying ) do
 		v:draw( self.screenmanager )
 	end
 
