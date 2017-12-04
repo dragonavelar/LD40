@@ -25,12 +25,13 @@ function Ingame.load( screenmanager, extra ) -- ::Ingame
 	self.Follower = require( "follower" )
 	self.Patrol = require( "patrol" )
 	self.Location = require( "location" )
+	self.Fish = require( "fish" )
 
 	self.screenmanager = screenmanager
 	self.followers = {}
 	self.patrols = {}
 	self.locations = {}
-	self.Fishes = {}
+	self.fishes = {}
 	self.Gameover = Gameover
 
 	self.world = love.physics.newWorld()
@@ -53,12 +54,14 @@ function Ingame:free()
 	self.Follower = nil
 	self.Patrol = nil
 	self.Location = nil
+	self.Fish = nil
 	self.world = nil
 	self.screenmanager = nil
 	self.player = nil
 	self.followers = nil
 	self.patrols = nil
 	self.locations = nil
+	self.fishes = nil
 end
 
 function Ingame.sort_by_y(obj1, obj2)
@@ -72,8 +75,13 @@ function Ingame:update( dt ) -- ::Ingame_id!
 	local k, v = nil, nil
 	-- Updating
 	self.world:update( dt )
-	self.player:update( dt )
+	self.player:update( dt, self.fishes, self.Fish )
 	local px, py = self.player:get_center()
+	for k, v in pairs( self.fishes ) do
+		if v.alive then
+			v:update( dt )
+		end
+	end
 	for k, v in pairs( self.followers ) do
 		if v.alive then
 			v:update( dt, px, py )
@@ -91,6 +99,12 @@ function Ingame:update( dt ) -- ::Ingame_id!
 	end
 
 	-- Cleaning up
+	for k, v in pairs( self.fishes ) do
+		if not v.alive then
+			v:free()
+			self.followers[ k ] = nil
+		end
+	end
 	for k, v in pairs( self.followers ) do
 		if not v.alive then
 			v:free()
@@ -148,6 +162,9 @@ function Ingame:draw() -- ::void!
 
 	local sorted = {}
 	table.insert( sorted, self.player )
+	for k, v in pairs( self.fishes ) do
+		table.insert( sorted, v )
+	end
 	for k, v in pairs( self.followers ) do
 		table.insert( sorted, v )
 	end

@@ -1,5 +1,6 @@
 local Obj = {}
 Obj.__index = Obj
+Obj.id = "Obj"
 
 function Obj.new( world, x, y, w, h ) -- ::Obj
 	-- Variable initializations
@@ -18,8 +19,6 @@ function Obj.new( world, x, y, w, h ) -- ::Obj
 	-- Fixin' dem shapes to dat boody
 	self.fixture = love.physics.newFixture( self.body, self.shape )
 	self.fixture:setUserData(self)
-	self.fixture:setCategory( COLLISION_MASK_NONE )
-	self.fixture:setMask()
 	-- Object variables
 	self.alive = true
 	return self
@@ -51,6 +50,10 @@ function Obj:collide( other, collision )
 end
 
 function Obj:disable_collision( other, collision )
+end
+
+function Obj:get_center() -- ::(float, float)
+	return self.body:getWorldPoint( self.shape:getPoint() )
 end
 
 return Obj

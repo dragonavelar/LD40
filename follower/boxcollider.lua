@@ -18,8 +18,6 @@ function Boxcollider.new( world, x, y, w, h ) -- ::Boxcollider
 	-- Fixin' dem shapes to dat boody
 	self.fixture = love.physics.newFixture( self.body, self.shape )
 	self.fixture:setUserData(self)
-	self.fixture:setCategory( COLLISION_MASK_NONE )
-	self.fixture:setMask()
 	-- Boxcolliderect variables
 	self.alive = true
 	return self

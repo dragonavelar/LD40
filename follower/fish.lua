@@ -1,27 +1,41 @@
+require( "math" )
 local Fish = {}
 Fish.__index = Fish
+Fish.id = "fish"
 
-function Fish.new( world, x, y, w, h ) -- ::Fish
+function Fish.new( world, x, y, ix, iy, imod, ir, radius, maxspeed, linear_damping, angular_damping, mass ) -- ::Fish
 	-- Variable initializations
-	x = x or 0
-	y = y or 0
-	w = w or 10
-	h = h or 10
+	ix = ix or 0
+	iy = ix or 0
+	imod = imod or 1
+	ir = ir or 1
+	radius = radius or 0.2
+	maxspeed = maxspeed or 2.0
+	linear_damping = linear_damping or 10
+	angular_damping = angular_damping or 2
+	mass = mass or 0.1 -- So dense, wow. o:
 	-- Class stuff
 	local self = setmetatable( {}, Fish )
 	-- Physics stuff
 	-- Let the body hit the floor
 	self.body = love.physics.newBody( world, x, y, "dynamic" )
-	self.body:setFixedRotation( true )
+	self.body:setLinearDamping( 0 )
+	self.body:setAngularDamping( 0 )
+	self.body:setMass( mass )
 	-- The shape of you
-	self.shape = love.physics.newRectangleShape( w, h )
+	self.shape = love.physics.newCircleShape( radius )
 	-- Fixin' dem shapes to dat boody
 	self.fixture = love.physics.newFixture( self.body, self.shape )
 	self.fixture:setUserData(self)
-	self.fixture:setCategory( COLLISION_MASK_NONE )
-	self.fixture:setMask()
-	-- Fishect variables
+	-- Object variables
 	self.alive = true
+	self.fly_time = 1.0
+	self.linear_damping = linear_damping
+	self.angular_damping = angular_damping
+
+	ix, iy = util.normalize( ix, iy )
+	self.body:applyLinearImpulse( ix * imod, iy * imod )
+	self.body:applyAngularImpulse( ir )
 	return self
 end
 
@@ -36,12 +50,23 @@ function Fish:free()
 end
 
 function Fish:update(dt) -- ::void!
+	if self.fly_time > 0 then
+		self.fly_time = self.fly_time - dt
+	else
+		self.body:setLinearDamping( self.linear_damping )
+		self.body:setAngularDamping( self.angular_damping )
+	end
 end
 
 function Fish:draw( screenmanager ) -- ::void!
 	local sm = screenmanager
-	love.graphics.setColor( 100, 0, 0 )
-	love.graphics.polygon( 'fill', self.body:getWorldPoints( self.shape:getPoints() ) )
+	local x,y,r
+	x, y = self.body:getWorldPoint( self.shape:getPoint() )
+	x, y = sm:getScreenPos( x, y )
+	r = self.shape:getRadius()
+	r = sm:getLength( r )
+	love.graphics.setColor(0,0,100)
+	love.graphics.circle('fill', x, y, r )
 end
 
 function Fish:input( act, val ) -- ::void!
@@ -51,6 +76,11 @@ function Fish:collide( other, collision )
 end
 
 function Fish:disable_collision( other, collision )
+	collision:setEnabled( false )
+end
+
+function Fish:get_center() -- ::(float, float)
+	return self.body:getWorldPoint( self.shape:getPoint() )
 end
 
 return Fish

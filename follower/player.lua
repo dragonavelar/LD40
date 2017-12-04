@@ -1,5 +1,5 @@
 require( "math" )
-local Fish = require( "fish" )
+require( "util" )
 
 local Player = {}
 Player.__index = Player
@@ -49,7 +49,7 @@ function Player.new(world, x, y, radius, maxspeed, linear_damping, angular_dampi
 	self.key_d = false
 
 	self.throw_fish_cooldown = 3
-	self.throw_fish_cooldown_timer = 3
+	self.throw_fish_cooldown_timer = 0
 	self.fish_target_x = nil
 	self.fish_target_y = nil
 
@@ -66,7 +66,7 @@ function Player:free() -- ::void!
 	self.body = nil
 end
 
-function Player:update(dt) -- ::void!
+function Player:update( dt, fishes, Fish ) -- ::void!
 	-- Apply movement
 	local fx, fy = self.walk_x, self.walk_y
 	local f = math.sqrt( fx*fx + fy*fy )
@@ -88,11 +88,16 @@ function Player:update(dt) -- ::void!
 		self.last_direction = -1
 	end
 	-- Throw fish
-	if self.fish_target_x ~= nil and self.fish_target_y ~= nil then
-		-- TODO spawn fish here
-	end
-	if self.throw_fish_cooldown < self.throw_fish_cooldown_timer then
-		self.throw_fish_cooldown = self.throw_fish_cooldown + dt
+	if self.throw_fish_cooldown_timer > 0 then
+		self.throw_fish_cooldown_timer = self.throw_fish_cooldown_timer - dt
+	elseif self.fish_target_x ~= nil and self.fish_target_y ~= nil then
+		local x, y = self:get_center()
+		local dx, dy = util.dist2d( x, y, self.fish_target_x, self.fish_target_y )
+		dx, dy = util.normalize( dx, dy )
+		print( "Something fishy" )
+		table.insert( fishes, Fish.new( self.body:getWorld(), x, y, dx, dy ) )
+		self.throw_fish_cooldown_timer = self.throw_fish_cooldown
+		self.fish_target_x, self.fish_target_y = nil, nil
 	end
 end
 
@@ -117,9 +122,8 @@ end
 
 function Player:input(act,val) -- ::void!
 	if act == "mousepressed" then
-		if self.throw_fish_cooldown_timer >= self.throw_fish_cooldown then
+		if self.throw_fish_cooldown_timer <= 0 then
 			self.fish_target_x, self.fish_target_y = val["x"], val["y"]
-			self.throw_fish_cooldown = 0
 		end
 	elseif act == "keypressed" then
 		if ( val["scancode"] == "w" or val["scancode"] == "up" ) then
