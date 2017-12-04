@@ -42,10 +42,14 @@ function Ingame.load( screenmanager, extra ) -- ::Ingame
 		collisions.endContact,
 		collisions.preSolve,
 		collisions.postSolve )
+
+	local sm = self.screenmanager
+
 	self.player = self.Player.new( self.world )
+	
 	table.insert( self.followers, self.Follower.new( self.world, 2, 2 ) )
 
-	table.insert( self.locations, self.Location.new( self.world, self.patrols, self.Patrol, self.screenmanager.meter_w/2, self.screenmanager.meter_h/2 ) )
+	table.insert( self.locations, self.Location.new( self.world, self.patrols, self.Patrol, sm.meter_w/2, sm.meter_h/2 ) )
 	--table.insert( self.locations, self.Location.new( self.world, self.patrols, self.Patrol, 9, 1 ) )
 	--table.insert( self.locations, self.Location.new( self.world, self.patrols, self.Patrol, 12, 5 ) )
 	--table.insert( self.locations, self.Location.new( self.world, self.patrols, self.Patrol, 1, 7 ) )
@@ -53,31 +57,49 @@ function Ingame.load( screenmanager, extra ) -- ::Ingame
 	-- Boundaries
 	local x, y, w, h
 	x,y = 0,0
-	w,h = self.screenmanager.meter_w, self.screenmanager.meter_h * 0.01
+	w,h = sm.meter_w, sm.meter_h * 0.01
 	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
-	x,y = 0, self.screenmanager.meter_h - h
+	x,y = 0, sm.meter_h - h
 	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
 	x,y = 0,0
-	w,h = self.screenmanager.meter_w * 0.01, self.screenmanager.meter_h
+	w,h = sm.meter_w * 0.01, sm.meter_h
 	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
-	x,y = self.screenmanager.meter_w - w, 0
+	x,y = sm.meter_w - w, 0
 	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
 
 	-- Top-left Palmtree
 	x,y = 0,0
-	w,h = 0.8, 1
+	w,h = sm.meter_w/20, sm.meter_h/9
 	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
 	-- Top-left House
-	x,y = 0.8,0
-	w,h = 3.0, 1.2
+	x,y = sm.meter_w/20, 0
+	w,h = sm.meter_w*3/16, sm.meter_h*1.2/9
 	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
 	-- Top House
-	x,y = 6,0
-	w,h = 4.5, 0.7
+	x,y = sm.meter_w*6/16, 0
+	w,h = sm.meter_w*4.5/16, sm.meter_h*0.7/9
 	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
 	-- Top Palmtree
-	x,y = 10.5,0
-	w,h = 0.8, 0.7
+	x,y = sm.meter_w*10.5/16, 0
+	w,h = sm.meter_w*0.8/16, sm.meter_h*0.7/9
+	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
+	-- Top-right Palmtree
+	x,y = sm.meter_w*13/16, 0
+	w,h = sm.meter_w*3/16, sm.meter_h*0.7/9
+	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
+	-- Top-right House
+	x,y = sm.meter_w*14/16, 0
+	w,h = sm.meter_w*2/16, sm.meter_h*1.3/9
+	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
+	x,y = sm.meter_w*15/16, 0
+	w,h = sm.meter_w*1/16, sm.meter_h*1.7/9
+	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
+	-- Bottom-left House
+	x,y = sm.meter_w*13/16, sm.meter_h*8/9
+	w,h = sm.meter_w*3/16, sm.meter_h*1/9
+	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
+	x,y = sm.meter_w*14/16, sm.meter_h*7.5/9
+	w,h = sm.meter_w*2/16, sm.meter_h*1.5/9
 	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
 
 	return self
