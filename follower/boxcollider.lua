@@ -37,14 +37,14 @@ function Boxcollider:update(dt) -- ::void!
 end
 
 function Boxcollider:draw( screenmanager ) -- ::void!
-	local sm = screenmanager
-	local x1,y1,x2,y2,x3,y3,x4,y4 = self.body:getWorldPoints( self.shape:getPoints() )
-	x1,y1 = sm:getScreenPos( x1, y1 )
-	x2,y2 = sm:getScreenPos( x2, y2 )
-	x3,y3 = sm:getScreenPos( x3, y3 )
-	x4,y4 = sm:getScreenPos( x4, y4 )
-	love.graphics.setColor( 0, 0, 0, 100 )
-	love.graphics.polygon( 'fill', x1,y1,x2,y2,x3,y3,x4,y4 )
+	--local sm = screenmanager
+	--local x1,y1,x2,y2,x3,y3,x4,y4 = self.body:getWorldPoints( self.shape:getPoints() )
+	--x1,y1 = sm:getScreenPos( x1, y1 )
+	--x2,y2 = sm:getScreenPos( x2, y2 )
+	--x3,y3 = sm:getScreenPos( x3, y3 )
+	--x4,y4 = sm:getScreenPos( x4, y4 )
+	--love.graphics.setColor( 0, 0, 0, 100 )
+	--love.graphics.polygon( 'fill', x1,y1,x2,y2,x3,y3,x4,y4 )
 end
 
 function Boxcollider:input( act, val ) -- ::void!
