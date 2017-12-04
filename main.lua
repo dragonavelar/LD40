@@ -1,25 +1,76 @@
-local image, music
-love.graphics.setFont( love.graphics.newFont( "assets/rosicrucian.ttf",35) )
+local Screenmanager = require( "screenmanager" )
+local Rules = require( "rules" )
+local Ingame = require( "ingame" )
+local Gameover = require( "gameover" )
+local screenmanager = nil
+local current_state = nil
 
 function love.load()
-	image = love.graphics.newImage("cute_image.png")
-	music = love.audio.newSource("nice_music.ogg")
-	music:play()
+	screenmanager = Screenmanager.new()
+	current_state = Gameover.load( screenmanager )
 end
 
 function love.update( dt )
+	local new_state, extra_arguments = nil, nil
+	new_state, extra_arguments = current_state:update( dt )
+	if new_state ~= nil then
+		if new_state == "ingame" then
+			new_state = current_state:transition( Ingame, extra_arguments )
+		elseif new_state == "mainmenu" then
+			new_state = current_state:transition( Mainmenu, extra_arguments ) -- TODO
+		elseif new_state == "gameover" then
+			new_state = current_state:transition( Gameover, extra_arguments )
+		elseif new_state == "rules" then
+			new_state = current_state:transition( Rules, extra_arguments )
+		elseif new_state == "exit" then
+			love.event.quit()
+			return nil
+		else
+			new_state = current_state:transition()
+		end
+		current_state = nil
+		current_state = new_state
+	end
 end
 
 function love.draw()
-	love.graphics.print("Hello World", 400, 300)
-	love.graphics.draw( image )
+	current_state:draw()
+	screenmanager:update( 1 )
+	screenmanager:draw()
 end
 
 
+function love.mousereleased( x, y, button, istouch )
+	local vals = {}
+	vals["button"] = button
+	vals["x"] = x
+	vals["y"] = y
+	vals["istouch"] = istouch
+	current_state:input( "mousereleased", vals )
+end
 
+function love.mousepressed( x, y, button, istouch )
+	local vals = {}
+	vals["button"] = button
+	vals["x"] = x
+	vals["y"] = y
+	vals["istouch"] = istouch
+	current_state:input( "mousepressed", vals )
+end
 
+function love.keypressed( key, scancode )
+	local vals = {}
+	vals["key"] = key
+	vals["scancode"] = scancode
+	current_state:input( "keypressed", vals )
+end
 
-
+function love.keyreleased( key, scancode )
+	local vals = {}
+	vals["key"] = key
+	vals["scancode"] = scancode
+	current_state:input( "keyreleased", vals )
+end
 
 
 
