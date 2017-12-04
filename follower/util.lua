@@ -14,5 +14,6 @@ end
 
 function util.normalize( vx, vy )
 	local vv = util.vec2dmod( vx, vy )
+	if vv == 0 then vv = 1 end
 	return vx / vv, vy / vv
 end

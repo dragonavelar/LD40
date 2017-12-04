@@ -5,9 +5,7 @@ Fish.id = "fish"
 
 function Fish.new( world, x, y, ix, iy, imod, ir, radius, maxspeed, linear_damping, angular_damping, mass ) -- ::Fish
 	-- Variable initializations
-	ix = ix or 0
-	iy = ix or 0
-	imod = imod or 1
+	imod = imod or 0.001
 	ir = ir or 1
 	radius = radius or 0.2
 	maxspeed = maxspeed or 2.0
@@ -29,11 +27,13 @@ function Fish.new( world, x, y, ix, iy, imod, ir, radius, maxspeed, linear_dampi
 	self.fixture:setUserData(self)
 	-- Object variables
 	self.alive = true
-	self.fly_time = 1.0
+	self.fly_time = 0.2 -- TODO take the magic away
+	self.live_time = 3.0
 	self.linear_damping = linear_damping
 	self.angular_damping = angular_damping
 
 	ix, iy = util.normalize( ix, iy )
+	print( "Impulse: " .. ix * imod .. " " .. iy * imod )
 	self.body:applyLinearImpulse( ix * imod, iy * imod )
 	self.body:applyAngularImpulse( ir )
 	return self
@@ -50,6 +50,12 @@ function Fish:free()
 end
 
 function Fish:update(dt) -- ::void!
+	if self.live_time <= 0 then
+		self.alive = false
+	else
+		self.live_time = self.live_time - dt
+	end
+	
 	if self.fly_time > 0 then
 		self.fly_time = self.fly_time - dt
 	else

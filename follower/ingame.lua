@@ -102,7 +102,7 @@ function Ingame:update( dt ) -- ::Ingame_id!
 	for k, v in pairs( self.fishes ) do
 		if not v.alive then
 			v:free()
-			self.followers[ k ] = nil
+			self.fishes[ k ] = nil
 		end
 	end
 	for k, v in pairs( self.followers ) do

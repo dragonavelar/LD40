@@ -94,7 +94,10 @@ function Player:update( dt, fishes, Fish ) -- ::void!
 		local x, y = self:get_center()
 		local dx, dy = util.dist2d( x, y, self.fish_target_x, self.fish_target_y )
 		dx, dy = util.normalize( dx, dy )
-		print( "Something fishy" )
+		print( "Something fishy..." )
+		print( "Mesus: " .. x .. " " .. y )
+		print( "Target: " ..self.fish_target_x .. " " .. self.fish_target_y )
+		print( "Dir: " ..dx .. " " .. dy )
 		table.insert( fishes, Fish.new( self.body:getWorld(), x, y, dx, dy ) )
 		self.throw_fish_cooldown_timer = self.throw_fish_cooldown
 		self.fish_target_x, self.fish_target_y = nil, nil
