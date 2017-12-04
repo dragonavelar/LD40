@@ -72,10 +72,10 @@ function Fish:draw( screenmanager ) -- ::void!
 	local x,y,r
 	x, y = self.body:getWorldPoint( self.shape:getPoint() )
 	x, y = sm:getScreenPos( x, y )
-	r = self.shape:getRadius()
-	r = sm:getLength( r )
-	love.graphics.setColor(0,0,100)
-	love.graphics.circle('fill', x, y, r )
+	--r = self.shape:getRadius()
+	--r = sm:getLength( r )
+	--love.graphics.setColor(0,0,100)
+	--love.graphics.circle('fill', x, y, r )
 	
 	love.graphics.setColor(255,255,255)
 	local w = self.sprites.idle:getWidth()

@@ -43,9 +43,10 @@ function Ingame.load( screenmanager, extra ) -- ::Ingame
 	self.player = self.Player.new( self.world )
 	table.insert( self.followers, self.Follower.new( self.world, 2, 2 ) )
 
-	table.insert( self.locations, self.Location.new( self.world, self.patrols, self.Patrol, 9, 1 ) )
-	table.insert( self.locations, self.Location.new( self.world, self.patrols, self.Patrol, 12, 5 ) )
-	table.insert( self.locations, self.Location.new( self.world, self.patrols, self.Patrol, 1, 7 ) )
+	table.insert( self.locations, self.Location.new( self.world, self.patrols, self.Patrol, self.screenmanager.meter_w/2, self.screenmanager.meter_h/2 ) )
+	--table.insert( self.locations, self.Location.new( self.world, self.patrols, self.Patrol, 9, 1 ) )
+	--table.insert( self.locations, self.Location.new( self.world, self.patrols, self.Patrol, 12, 5 ) )
+	--table.insert( self.locations, self.Location.new( self.world, self.patrols, self.Patrol, 1, 7 ) )
 	return self
 end
 
@@ -132,7 +133,7 @@ function Ingame:update( dt ) -- ::Ingame_id!
 		end
 		print( "PERDEEEU" )
 		print( "Pontuacao: " .. extra["score"] )
-		return "gameover", extra
+		--return "gameover", extra
 	end
 end
 
@@ -155,13 +156,12 @@ function Ingame:draw() -- ::void!
 	end
 
 	local k, v = nil, nil
-	for k, v in pairs( self.locations ) do
-		v:draw( self.screenmanager )
-	end
-
 	local sorted = {}
 	local flying = {}
 	table.insert( sorted, self.player )
+	for k, v in pairs( self.locations ) do
+		table.insert( sorted, v )
+	end
 	for k, v in pairs( self.fishes ) do
 		if v.fly_time and v.fly_time > 0 then
 			table.insert( flying, v )
