@@ -6,13 +6,14 @@ Follower.__index = Follower
 Follower.id = "follower"
 
 Follower.sprites = {}
-Follower.sprites.idle = love.graphics.newImage("assets/fanatic.png")
+Follower.sprites.idle = { love.graphics.newImage("assets/fanatic.png"), love.graphics.newImage("assets/fanatic_alternative.png") }
 Follower.sprites.pxpm = 1024
 
-function Follower.new(world, x, y, radius, maxspeed, linear_damping, angular_damping, mass, strenght, sight_radius) -- ::Follower
+function Follower.new(world, x, y, type, radius, maxspeed, linear_damping, angular_damping, mass, strenght, sight_radius) -- ::Follower
 	-- Variable initializations
 	x = x or 0
 	y = y or 0
+	type = type or math.random(2)
 	radius = radius or 0.5
 	maxspeed = maxspeed or 0.9
 	linear_damping = linear_damping or 5
@@ -40,6 +41,7 @@ function Follower.new(world, x, y, radius, maxspeed, linear_damping, angular_dam
 	self.stronkness = strenght -- So stronk
 	self.sight_radius = sight_radius
 	self.last_direction = 1
+	self.type = type
 	self.alive = true
 	return self
 end
@@ -119,12 +121,13 @@ function Follower:draw( screenmanager ) -- ::void!
 	--love.graphics.circle('fill', x, y, r )
 
 	love.graphics.setColor(255,255,255)
+	local img = self.sprites.idle[self.type]
 	local dir = self.last_direction
-	local w = self.sprites.idle:getWidth()
-	local h = self.sprites.idle:getHeight()
-	local sw = screenmanager:getScaleFactor( self.sprites.idle:getWidth(), self.sprites.idle:getWidth() / self.sprites.pxpm )
-	local sh = screenmanager:getScaleFactor( self.sprites.idle:getWidth(), self.sprites.idle:getWidth() / self.sprites.pxpm )
-	love.graphics.draw( self.sprites.idle, x, y, 0, dir * sw, sh, w/2, h/2 )
+	local w = img:getWidth()
+	local h = img:getHeight()
+	local sw = screenmanager:getScaleFactor( img:getWidth(), img:getWidth() / self.sprites.pxpm )
+	local sh = screenmanager:getScaleFactor( img:getWidth(), img:getWidth() / self.sprites.pxpm )
+	love.graphics.draw( img, x, y, 0, dir * sw, sh, w/2, h/2 )
 end
 
 function Follower:input(act,val) -- ::void!

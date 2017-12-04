@@ -8,7 +8,7 @@ Fish.sprites.pxpm = 1024
 
 function Fish.new( world, x, y, ix, iy, imod, ir, radius, maxspeed, linear_damping, angular_damping, mass ) -- ::Fish
 	-- Variable initializations
-	imod = imod or 0.0013
+	imod = imod or 0.002
 	ir = ir or 0.0001
 	radius = radius or 0.2
 	maxspeed = maxspeed or 2.0

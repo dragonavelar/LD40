@@ -2,7 +2,7 @@ local Location = {}
 Location.__index = Location
 Location.id = "location"
 Location.sprites = {}
-Location.sprites.idle = love.graphics.newImage("assets/fanatic_pole.png")
+Location.sprites.idle = { love.graphics.newImage("assets/fanatic_pole.png"), love.graphics.newImage("assets/fanatic_pole_alternative.png") }
 Location.sprites.free = love.graphics.newImage("assets/empty_pole.png")
 Location.sprites.pxpm = 1024
 
@@ -28,6 +28,7 @@ function Location.new( world, patrols, Patrol, x, y, radius, cooldown ) -- ::Loc
 	self.cooldown = cooldown
 	self.cooldown_timer = self.cooldown
 	self.activated = false
+	self.type = math.random(2)
 	table.insert( patrols, Patrol.new( world, self, x + 1, y + 1 ) )
 	return self
 end
@@ -50,7 +51,8 @@ function Location:update(dt, world, followers, Follower, patrols, Patrol ) -- ::
 		self.activated = false
 		self.cooldown_timer = 0
 		local x, y = self:get_center()
-		table.insert( followers, Follower.new( world, x, y ) )
+		table.insert( followers, Follower.new( world, x, y, self.type ) )
+		self.type = math.random(2)
 	end
 end
 
@@ -61,7 +63,7 @@ function Location:draw( screenmanager ) -- ::void!
 		img = self.sprites.free
 		love.graphics.setColor( 200, 200, 200 )
 	else
-		img = self.sprites.idle
+		img = self.sprites.idle[self.type]
 		love.graphics.setColor( 0, 0, 0 )
 	end
 
