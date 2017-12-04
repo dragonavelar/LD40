@@ -5,22 +5,18 @@ Gameover.state_id = 'Gameover'
 
 function Gameover.load( screenmanager, extra ) -- ::Gameover
 	-- Variable initializations
-	
 	local score = (extra and extra["score"]) or nil
 	-- Class stuff
-	
 	local self = setmetatable( {}, Gameover )
 
 	self.screenmanager = screenmanager
-	self.image = love.graphics.newImage( "assets/gameover.png" )
-	
-	self.font = love.graphics.newFont("assets/rosicrucian.ttf")
-	self.text = love.graphics.newText(self.font, 'Press any key to restart')
 	if score ~= nil then
-		self.score = love.graphics.newText( self.font, "Score: " .. score )
+		self.score = score
 	end
 
-	self.quit = false
+	self.timer = 1.0
+	self.restart = false
+	self.exit = false
 	
 	return self
 end
@@ -29,15 +25,68 @@ function Gameover:free()
 end
 
 function Gameover:update( dt ) -- ::Gameover_id!	
-	if self.quit == true then
-		return "ingame", nil
+	if self.timer > 0 then
+		self.timer = self.timer - dt
+	else
+		if self.restart then
+			return "ingame", nil
+		elseif self.exit then
+			return "menu", nil
+		end
 	end
 end
 
 function Gameover:draw( ) -- ::void!
+
+
 	local sm = self.screenmanager
 	local x,y, sw, sh
 
+	local sm = self.screenmanager
+	local x, y, sw, sh
+	local font = love.graphics.getFont()
+	sh = sm:getScaleFactor( font:getHeight(), 0.5 )
+	sw = sh
+
+	love.graphics.setColor(50, 50, 50)
+	x, y = sm:getScreenPos( 0, 0 )
+	love.graphics.rectangle( "fill", x, y, sm:getLength( sm.meter_w ), sm:getLength( sm.meter_h ) )
+
+	local w = sm:getLength( sm.meter_w * 14/16 ) / sw
+	love.graphics.setColor(250, 235, 215, 255)
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 1/9 )
+	love.graphics.printf( "BUSTED", x, y, w/4, "center", 0, 4*sw, 4*sh )
+
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 6/9 )
+	love.graphics.printf( "Score: " .. self.score , x, y, w, "center", 0, sw, sh )
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 8/9 )
+	love.graphics.printf( "Press any key to continue", x, y, w, "center", 0, sw, sh )
+end
+
+function Gameover:input( act, val ) -- ::void!
+	if self.timer <= 0 then
+		if act == "mousepressed" then
+			self.restart = true
+		elseif act == "keypressed" then
+			if val["key"] == "escape" then
+				self.exit = true
+			else
+				self.restart = true
+			end
+		end
+	end
+end
+
+function Gameover:transition( State, extra ) -- ::Ingame!
+	if State == nil then
+		return self
+	end
+	local new_state = State.load( self.screenmanager, extra )
+	self:free()
+	return new_state
+end
+
+function Gameover:oldDraw()
 	x, y = sm.screen_x + sm.screen_w * 0.5, sm.screen_y
 	x, y = math.floor( x ), math.floor( y )
 	sw = sm:getScaleFactor( self.image:getWidth(), sm.meter_w )
@@ -60,29 +109,6 @@ function Gameover:draw( ) -- ::void!
 		love.graphics.setColor(255,255,255)
 		love.graphics.draw( self.score, x, y, 0, sw, sh)
 	end
-end
-
-function Gameover:input( act, val ) -- ::void!
-	if act == "mousereleased" or act == "mousepressed" or act == "keypressed" then
-		self.quit = true
-	elseif act == "keyreleased" then
-		if val["scancode"] ~= "w"
-			and val["scancode"] ~= "s"
-			and val["scancode"] ~= "a"
-			and val["scancode"] ~= "d"
-		then
-			self.quit = true
-		end
-	end
-end
-
-function Gameover:transition( State, extra ) -- ::Ingame!
-	if State == nil then
-		return self
-	end
-	local new_state = State.load( self.screenmanager, extra )
-	self:free()
-	return new_state
 end
 
 return Gameover

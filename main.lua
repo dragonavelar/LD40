@@ -1,42 +1,52 @@
 local Screenmanager = require( "screenmanager" )
-local Rules = require( "rules" )
+local Menu = require( "menu" )
 local Ingame = require( "ingame" )
 local Gameover = require( "gameover" )
 local screenmanager = nil
 local current_state = nil
+local font = nil
 
 function love.load()
 	screenmanager = Screenmanager.new()
-	current_state = Gameover.load( screenmanager )
+	current_state = Menu.load( screenmanager )
+	font = love.graphics.newFont( "assets/rosicrucian.ttf", 64 )
+	love.graphics.setFont( font )
 end
 
 function love.update( dt )
-	local new_state, extra_arguments = nil, nil
-	new_state, extra_arguments = current_state:update( dt )
-	if new_state ~= nil then
-		if new_state == "ingame" then
-			new_state = current_state:transition( Ingame, extra_arguments )
-		elseif new_state == "mainmenu" then
-			new_state = current_state:transition( Mainmenu, extra_arguments ) -- TODO
-		elseif new_state == "gameover" then
-			new_state = current_state:transition( Gameover, extra_arguments )
-		elseif new_state == "rules" then
-			new_state = current_state:transition( Rules, extra_arguments )
-		elseif new_state == "exit" then
-			love.event.quit()
-			return nil
-		else
-			new_state = current_state:transition()
+	if current_state then
+		local new_state, extra_arguments = nil, nil
+		new_state, extra_arguments = current_state:update( dt )
+		if new_state ~= nil then
+			if new_state == "ingame" then
+				print( "Stating game" )
+				new_state = current_state:transition( Ingame, extra_arguments )
+			elseif new_state == "menu" then
+				print( "Going to main_menu" )
+				new_state = current_state:transition( Menu, extra_arguments ) -- TODO
+			elseif new_state == "gameover" then
+				print( "Losing" )
+				new_state = current_state:transition( Gameover, extra_arguments )
+			elseif new_state == "exit" then
+				print( "Bye bye!" )
+				love.event.quit()
+				return nil
+			else
+				print( "Something is fishy" )
+				new_state = current_state:transition()
+			end
+			current_state = nil
+			current_state = new_state
 		end
-		current_state = nil
-		current_state = new_state
 	end
 end
 
 function love.draw()
-	current_state:draw()
-	screenmanager:update( 1 )
-	screenmanager:draw()
+	if current_state then
+		current_state:draw()
+		screenmanager:update( 1 )
+		screenmanager:draw()
+	end
 end
 
 
@@ -46,7 +56,9 @@ function love.mousereleased( x, y, button, istouch )
 	vals["x"] = x
 	vals["y"] = y
 	vals["istouch"] = istouch
-	current_state:input( "mousereleased", vals )
+	if current_state then
+		current_state:input( "mousereleased", vals )
+	end
 end
 
 function love.mousepressed( x, y, button, istouch )
@@ -55,21 +67,27 @@ function love.mousepressed( x, y, button, istouch )
 	vals["x"] = x
 	vals["y"] = y
 	vals["istouch"] = istouch
-	current_state:input( "mousepressed", vals )
+	if current_state then
+		current_state:input( "mousepressed", vals )
+	end
 end
 
 function love.keypressed( key, scancode )
 	local vals = {}
 	vals["key"] = key
 	vals["scancode"] = scancode
-	current_state:input( "keypressed", vals )
+	if current_state then
+		current_state:input( "keypressed", vals )
+	end
 end
 
 function love.keyreleased( key, scancode )
 	local vals = {}
 	vals["key"] = key
 	vals["scancode"] = scancode
-	current_state:input( "keyreleased", vals )
+	if current_state then
+		current_state:input( "keyreleased", vals )
+	end
 end
 
 

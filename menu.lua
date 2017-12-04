@@ -6,6 +6,9 @@ function menu.load( screenmanager ) -- ::menu
 	-- Class stuff
 	local self = setmetatable( {}, menu )
 	self.screenmanager = screenmanager
+	self.timer = 1.0
+	self.start = false
+	self.exit = false
 	return self
 end
 
@@ -13,24 +16,67 @@ function menu:free()
 end
 
 function menu:update( dt ) -- ::menu_id!
-	-- if love.keyboard.isDown( "r" ) then colocar as regras end
-	-- if love.keyboard.isDown( "esc" ) then love.quit() end
-	-- if love.keyboard.isDown( "space" ) then ir pro jogo end
+	if self.timer > 0 then
+		self.timer = self.timer - dt
+	else
+		if self.start then
+			return "ingame", nil
+		elseif self.exit then
+			return "exit", nil
+		end
+	end
 end
 
 function menu:draw( ) -- ::void!
-	  love.graphics.setColor(250, 235, 215, 255)
-	love.graphics.print("Press space for start the game!", 50, 100)
-	love.graphics.print("Press ESC for quit the game.", 50, 200)	
-	love.graphics.print("Press \"R\" for read the rules.", 50, 300)	
+	local sm = self.screenmanager
+	local x, y, sw, sh
+	local font = love.graphics.getFont()
+	sh = sm:getScaleFactor( font:getHeight(), 0.5 )
+	sw = sh
+
+	love.graphics.setColor(50, 50, 50)
+	x, y = sm:getScreenPos( 0, 0 )
+	love.graphics.rectangle( "fill", x, y, sm:getLength( sm.meter_w ), sm:getLength( sm.meter_h ) )
+
+	local w = sm:getLength( sm.meter_w * 14/16 ) / sw
+	love.graphics.setColor(250, 235, 215, 255)
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 1/9 )
+	love.graphics.printf( "ULTRA MESUS VS BROMANS", x, y, w/2, "center", 0, 2*sw, 2*sh )
+
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 3/9 )
+	love.graphics.printf( "Move you character using the arrow keys or wasd.", x, y, w, "center", 0, sw, sh )
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 4/9 )
+	love.graphics.printf( "Convert followers to your cause by rescuing them.\nThe more followers you have,\nthe harder it is to move through the masses", x, y, w, "center", 0, sw, sh )
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 6/9 )
+	love.graphics.printf( "Be careful with the Broman patrols,\nthey can pass through the followers and poles!", x, y, w, "center", 0, sw, sh )
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 7.5/9 )
+	love.graphics.printf( "Click to throw a fish and distract your followers", x, y, w, "center", 0, sw, sh )
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 8/9 )
+	love.graphics.printf( "Press any key to continue", x, y, w, "center", 0, sw, sh )
 
 end
 
 function menu:input( act, val ) -- ::void!
-	
+	if self.timer <= 0 then
+		if act == "mousepressed" then
+			self.start = true
+		elseif act == "keypressed" then
+			if val["key"] == "escape" then
+				self.exit = true
+			else
+				self.start = true
+			end
+		end
+	end
 end
 
-function menu:transition( menu ) -- ::menu!
+function menu:transition( State ) -- ::menu!
+	if State == nil then
+		return self
+	end
+	local new_state = State.load( self.screenmanager, extra )
+	self:free()
+	return new_state
 end
 
 return menu
