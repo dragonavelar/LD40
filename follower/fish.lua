@@ -2,6 +2,9 @@ require( "math" )
 local Fish = {}
 Fish.__index = Fish
 Fish.id = "fish"
+Fish.sprites = {}
+Fish.sprites.idle = love.graphics.newImage("assets/dead_fish.png")
+Fish.sprites.pxpm = 1024
 
 function Fish.new( world, x, y, ix, iy, imod, ir, radius, maxspeed, linear_damping, angular_damping, mass ) -- ::Fish
 	-- Variable initializations
@@ -73,6 +76,14 @@ function Fish:draw( screenmanager ) -- ::void!
 	r = sm:getLength( r )
 	love.graphics.setColor(0,0,100)
 	love.graphics.circle('fill', x, y, r )
+	
+	love.graphics.setColor(255,255,255)
+	local w = self.sprites.idle:getWidth()
+	local h = self.sprites.idle:getHeight()
+	local o = self.body:getAngle()
+	local sw = sm:getScaleFactor( self.sprites.idle:getWidth(), self.sprites.idle:getWidth() / self.sprites.pxpm )
+	local sh = sm:getScaleFactor( self.sprites.idle:getHeight(), self.sprites.idle:getHeight() / self.sprites.pxpm )
+	love.graphics.draw( self.sprites.idle, x, y, o, sw, sh, w/2, h/2 )
 end
 
 function Fish:input( act, val ) -- ::void!
