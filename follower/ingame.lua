@@ -70,7 +70,6 @@ function Ingame.sort_by_y(obj1, obj2)
 	return y1 < y2
 end
 
-
 function Ingame:update( dt ) -- ::Ingame_id!
 	local k, v = nil, nil
 	-- Updating
@@ -84,7 +83,7 @@ function Ingame:update( dt ) -- ::Ingame_id!
 	end
 	for k, v in pairs( self.followers ) do
 		if v.alive then
-			v:update( dt, px, py )
+			v:update( dt, px, py, self.fishes )
 		end
 	end
 	for k, v in pairs( self.patrols ) do

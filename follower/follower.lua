@@ -1,4 +1,5 @@
 require( "math" )
+require( "util" )
 
 local Follower = {}
 Follower.__index = Follower
@@ -53,7 +54,12 @@ function Follower:free() -- ::void!
 	self.body = nil
 end
 
-function Follower:update(dt, target_x, target_y) -- ::void!
+function Follower:get_vector_to( tx, ty )
+	local x, y = self:get_center()
+	return util.dist2d( x, y, tx, ty )
+end
+
+function Follower:update( dt, target_x, target_y, fishes ) -- ::void!
 	-- Apply movement
 	local x, y = self.body:getWorldPoint( self.shape:getPoint() )
 	local fx, fy = 0,0
@@ -61,9 +67,8 @@ function Follower:update(dt, target_x, target_y) -- ::void!
 		and
 		( x ~= target_x and y ~= target_y )
 	then
-		fx = target_x - x
-		fy = target_y - y
-		local f = math.sqrt( fx*fx + fy*fy )
+		fx, fy = self:get_vector_to( target_x, target_y )
+		local f = util.vec2dmod( fx, fy )
 		if f == 0 then f = 1 end
 		if f > self.sight_radius then
 			fx, fy = 0, 0
@@ -72,6 +77,20 @@ function Follower:update(dt, target_x, target_y) -- ::void!
 			fy = self.stronkness * fy / f
 		end
 	end
+
+	for k, v in pairs( fishes ) do
+		if v.alive then
+			local ffx, ffy = self:get_vector_to( v:get_center() )
+			local ff = util.vec2dmod( ffx, ffy )
+			if ff == 0 then ff = 1 end
+			if ff <= self.sight_radius then
+				fx = self.stronkness * ffx / ff
+				fy = self.stronkness * ffy / ff
+			end
+			v:update( dt, px, py, fishes )
+		end
+	end
+	
 	self.body:applyForce( fx, fy )
 	x, y = nil, nil
 	fx, fy, f = nil, nil, nil

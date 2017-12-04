@@ -30,8 +30,8 @@ function Fish.new( world, x, y, ix, iy, imod, ir, radius, maxspeed, linear_dampi
 	self.fixture:setUserData(self)
 	-- Object variables
 	self.alive = true
-	self.fly_time = 0.2 -- TODO take the magic away
-	self.live_time = 3.0
+	self.fly_time = 0.3 -- TODO take the magic away
+	self.live_time = 5.0
 	self.linear_damping = linear_damping
 	self.angular_damping = angular_damping
 
