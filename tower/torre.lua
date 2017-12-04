@@ -50,7 +50,6 @@ function Torre:draw() -- ::void!
 	--r = self.shape:getRadius()
 	--love.graphics.setColor(100,0,0)
 	love.graphics.draw(self.image, self.x,self.y,0,0.1, 0.1)
-	print( x, y, r )
 end
 
 function Torre:input(act,val) -- ::void!

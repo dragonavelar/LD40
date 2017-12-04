@@ -78,7 +78,7 @@ end
 
 function Gameover:transition( State, extra ) -- ::Ingame!
 	if State == nil then
-		return self -- TODO change
+		return self
 	end
 	local new_state = State.load( self.screenmanager, extra )
 	self:free()

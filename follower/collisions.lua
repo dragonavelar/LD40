@@ -42,7 +42,7 @@ function collisions.endContact( a, b, coll )
 	end
 end
 
-function collisions.preSolve( a, b, coll ) -- TODO
+function collisions.preSolve( a, b, coll )
 	if a:getUserData() and a:getUserData().disable_collision and b:getUserData() and b:getUserData().disable_collision then
 		a:getUserData():disable_collision( b:getUserData(), coll )
 		b:getUserData():disable_collision( a:getUserData(), coll )
@@ -50,5 +50,5 @@ function collisions.preSolve( a, b, coll ) -- TODO
 	return false
 end
 
-function collisions.postSolve( a, b, coll, nimpulse, timpulse ) -- TODO
+function collisions.postSolve( a, b, coll, nimpulse, timpulse )
 end

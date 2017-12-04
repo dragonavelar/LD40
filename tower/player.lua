@@ -72,7 +72,6 @@ function Player:draw() -- ::void!
 	r = self.shape:getRadius()
 	love.graphics.setColor(100,0,0)
 	love.graphics.circle('fill', x, y, r )
-	print( x, y, r )
 end
 
 function Player:input(act,val) -- ::void!

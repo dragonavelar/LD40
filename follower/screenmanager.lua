@@ -1,13 +1,6 @@
 local ScreenManager = {}
 ScreenManager.__index = ScreenManager
 ScreenManager.layers = {}
--- TODO: Unused for now
-ScreenManager.layers.HUD = 0
-ScreenManager.layers.FOREGROUND = 1
-ScreenManager.layers.FRONT = 2
-ScreenManager.layers.MIDDLE = 3
-ScreenManager.layers.BACK = 4
-ScreenManager.layers.BACKGROUND = 5
 
 function ScreenManager.new() -- ::ScreenManager
 	local self = setmetatable({},ScreenManager)

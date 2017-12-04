@@ -36,7 +36,6 @@ function Fish.new( world, x, y, ix, iy, imod, ir, radius, maxspeed, linear_dampi
 	self.angular_damping = angular_damping
 
 	ix, iy = util.normalize( ix, iy )
-	print( "Impulse: " .. ix * imod .. " " .. iy * imod )
 	self.body:applyLinearImpulse( ix * imod, iy * imod )
 	self.body:applyAngularImpulse( ir )
 	return self
