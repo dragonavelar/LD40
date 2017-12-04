@@ -1,4 +1,5 @@
 local image, music
+love.graphics.setFont( love.graphics.newFont( "assets/rosicrucian.ttf",35) )
 
 function love.load()
 	image = love.graphics.newImage("cute_image.png")
