@@ -13,7 +13,9 @@ function menu:free()
 end
 
 function menu:update( dt ) -- ::menu_id!
-
+	-- if love.keyboard.isDown( "r" ) then colocar as regras end
+	-- if love.keyboard.isDown( "esc" ) then love.quit() end
+	-- if love.keyboard.isDown( "space" ) then ir pro jogo end
 end
 
 function menu:draw( ) -- ::void!

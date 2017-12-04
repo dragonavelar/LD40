@@ -20,7 +20,7 @@ end
 
 function Rules:draw( ) -- ::void!
 	local x,y
-	x, y = self.screenmanager_x,self.screenmanager_y	
+	x, y = self.screenmanager.screen_x,self.screenmanager.screen_y	
 	local sw = self.screenmanager:getScaleFactor(self.image:getWidth(), self.screenmanager.meter_w)
 	local sh = self.screenmanager:getScaleFactor(self.image:getHeight(), self.screenmanager.meter_h)
 	love.graphics.setColor(255,255,255)
