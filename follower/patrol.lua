@@ -22,7 +22,7 @@ function Patrol.new(world, parent_location, x, y, radius, patrol_radius, maxspee
 	mass = mass or 2 -- So dense, wow. o:
 	strenght = strenght or 0.01
 	sight_radius = sight_radius or 4 + radius
-	patrol_radius = patrol_radius or 10
+	patrol_radius = patrol_radius or sight_radius + 0.5
 	-- Class stuff
 	local self = setmetatable( {}, Patrol )
 	-- Physics stuff
@@ -142,7 +142,7 @@ function Patrol:collide( other, collision )
 end
 
 function Patrol:disable_collision( other, collision )
-	if other.id == "follower" then
+	if other.id == "follower" or other.id == "location" then
 		collision:setEnabled( false )
 	end
 end

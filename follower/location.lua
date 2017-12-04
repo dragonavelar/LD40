@@ -78,15 +78,6 @@ function Location:draw( screenmanager ) -- ::void!
 	local sw = sm:getScaleFactor( img:getWidth(), img:getWidth() / self.sprites.pxpm )
 	local sh = sm:getScaleFactor( img:getHeight(), img:getHeight() / self.sprites.pxpm )
 	love.graphics.draw( img, x, y, 0, sw, sh, w/2, h/2 )
-
-
-
-	--local x1,y1,x2,y2,x3,y3,x4,y4 = self.body:getWorldPoints( self.shape:getPoints() )
-	--x1,y1 = sm:getScreenPos( x1, y1 )
-	--x2,y2 = sm:getScreenPos( x2, y2 )
-	--x3,y3 = sm:getScreenPos( x3, y3 )
-	--x4,y4 = sm:getScreenPos( x4, y4 )
-	--love.graphics.polygon( 'fill', x1,y1,x2,y2,x3,y3,x4,y4 )
 end
 
 function Location:input( act, val ) -- ::void!

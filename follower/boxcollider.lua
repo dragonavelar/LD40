@@ -3,15 +3,15 @@ Boxcollider.__index = Boxcollider
 
 function Boxcollider.new( world, x, y, w, h ) -- ::Boxcollider
 	-- Variable initializations
-	x = x or 0
-	y = y or 0
-	w = w or 10
-	h = h or 10
+	x = x + w /2
+	y = y + h / 2
+	w = w
+	h = h
 	-- Class stuff
 	local self = setmetatable( {}, Boxcollider )
 	-- Physics stuff
 	-- Let the body hit the floor
-	self.body = love.physics.newBody( world, x, y, "dynamic" )
+	self.body = love.physics.newBody( world, x, y, "static" )
 	self.body:setFixedRotation( true )
 	-- The shape of you
 	self.shape = love.physics.newRectangleShape( w, h )
@@ -38,8 +38,13 @@ end
 
 function Boxcollider:draw( screenmanager ) -- ::void!
 	local sm = screenmanager
-	love.graphics.setColor( 100, 0, 0 )
-	love.graphics.polygon( 'fill', self.body:getWorldPoints( self.shape:getPoints() ) )
+	local x1,y1,x2,y2,x3,y3,x4,y4 = self.body:getWorldPoints( self.shape:getPoints() )
+	x1,y1 = sm:getScreenPos( x1, y1 )
+	x2,y2 = sm:getScreenPos( x2, y2 )
+	x3,y3 = sm:getScreenPos( x3, y3 )
+	x4,y4 = sm:getScreenPos( x4, y4 )
+	love.graphics.setColor( 0, 0, 0, 100 )
+	love.graphics.polygon( 'fill', x1,y1,x2,y2,x3,y3,x4,y4 )
 end
 
 function Boxcollider:input( act, val ) -- ::void!

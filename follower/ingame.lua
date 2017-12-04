@@ -26,12 +26,14 @@ function Ingame.load( screenmanager, extra ) -- ::Ingame
 	self.Patrol = require( "patrol" )
 	self.Location = require( "location" )
 	self.Fish = require( "fish" )
+	self.Boxcollider = require( "boxcollider" )
 
 	self.screenmanager = screenmanager
 	self.followers = {}
 	self.patrols = {}
 	self.locations = {}
 	self.fishes = {}
+	self.walls = {}
 	self.Gameover = Gameover
 
 	self.world = love.physics.newWorld()
@@ -47,6 +49,37 @@ function Ingame.load( screenmanager, extra ) -- ::Ingame
 	--table.insert( self.locations, self.Location.new( self.world, self.patrols, self.Patrol, 9, 1 ) )
 	--table.insert( self.locations, self.Location.new( self.world, self.patrols, self.Patrol, 12, 5 ) )
 	--table.insert( self.locations, self.Location.new( self.world, self.patrols, self.Patrol, 1, 7 ) )
+
+	-- Boundaries
+	local x, y, w, h
+	x,y = 0,0
+	w,h = self.screenmanager.meter_w, self.screenmanager.meter_h * 0.01
+	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
+	x,y = 0, self.screenmanager.meter_h - h
+	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
+	x,y = 0,0
+	w,h = self.screenmanager.meter_w * 0.01, self.screenmanager.meter_h
+	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
+	x,y = self.screenmanager.meter_w - w, 0
+	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
+
+	-- Top-left Palmtree
+	x,y = 0,0
+	w,h = 0.8, 1
+	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
+	-- Top-left House
+	x,y = 0.8,0
+	w,h = 3.0, 1.2
+	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
+	-- Top House
+	x,y = 6,0
+	w,h = 4.5, 0.7
+	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
+	-- Top Palmtree
+	x,y = 10.5,0
+	w,h = 0.8, 0.7
+	table.insert( self.walls, self.Boxcollider.new( self.world, x, y, w, h  ) )
+
 	return self
 end
 
@@ -77,6 +110,11 @@ function Ingame:update( dt ) -- ::Ingame_id!
 	self.world:update( dt )
 	self.player:update( dt, self.fishes, self.Fish )
 	local px, py = self.player:get_center()
+	for k, v in pairs( self.walls ) do
+		if v.alive then
+			v:update( dt )
+		end
+	end
 	for k, v in pairs( self.fishes ) do
 		if v.alive then
 			v:update( dt )
@@ -99,6 +137,12 @@ function Ingame:update( dt ) -- ::Ingame_id!
 	end
 
 	-- Cleaning up
+	for k, v in pairs( self.walls ) do
+		if not v.alive then
+			v:free()
+			self.walls[ k ] = nil
+		end
+	end
 	for k, v in pairs( self.fishes ) do
 		if not v.alive then
 			v:free()
@@ -133,7 +177,7 @@ function Ingame:update( dt ) -- ::Ingame_id!
 		end
 		print( "PERDEEEU" )
 		print( "Pontuacao: " .. extra["score"] )
-		--return "gameover", extra
+		return "gameover", extra
 	end
 end
 
@@ -154,8 +198,8 @@ function Ingame:draw() -- ::void!
 		sh = sm:getScaleFactor( house:getHeight(), house:getHeight() / self.sprites.pxpm )
 		love.graphics.draw( house, x, y, 0, sw, sh )
 	end
-
 	local k, v = nil, nil
+
 	local sorted = {}
 	local flying = {}
 	table.insert( sorted, self.player )
@@ -191,6 +235,10 @@ function Ingame:draw() -- ::void!
 		sw = sm:getScaleFactor( house:getWidth(), house:getWidth() / self.sprites.pxpm )
 		sh = sm:getScaleFactor( house:getHeight(), house:getHeight() / self.sprites.pxpm )
 		love.graphics.draw( house, x, y, 0, sw, sh )
+	end
+
+	for k, v in pairs( self.walls ) do
+		v:draw( sm )
 	end
 
 	self.screenmanager:update( 1 )
