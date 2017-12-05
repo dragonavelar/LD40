@@ -47,16 +47,14 @@ function Gameover:draw( ) -- ::void!
 	sh = sm:getScaleFactor( Gameover.splashscreen:getHeight(), sm.meter_h )
 	love.graphics.draw( Gameover.splashscreen, x, y, 0, sw, sh )
 
-	love.graphics.setColor(0, 0, 0)
+	love.graphics.setColor(255, 255, 255)
 	local font = love.graphics.getFont()
 	sh = sm:getScaleFactor( font:getHeight(), 0.5 )
 	sw = sh
 	w = sm:getLength( sm.meter_w * 14/16 ) / sw
-	love.graphics.setColor(128, 0, 0)
 	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 0.25/9 )
 	love.graphics.printf( "BUSTED", x, y, w/4, "center", 0, 4*sw, 4*sh )
 
-	love.graphics.setColor(0, 0, 0)
 	x, y = sm:getScreenPos( sm.meter_w * 4/16, sm.meter_h * 2/9 )
 	love.graphics.printf( "Score: " .. self.score , x, y, w, "left", 0, sw, sh )
 
