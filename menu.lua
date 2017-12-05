@@ -31,7 +31,7 @@ end
 
 function Menu:draw( ) -- ::void!
 	local sm = self.screenmanager
-	local x, y, sw, sh
+	local x, y, sw, sh, w
 
 	love.graphics.setColor(255, 255, 255)
 	x, y = sm:getScreenPos( 0, 0 )
@@ -43,12 +43,18 @@ function Menu:draw( ) -- ::void!
 	local font = love.graphics.getFont()
 	sh = sm:getScaleFactor( font:getHeight(), 0.5 )
 	sw = sh
-	local w = sm:getLength( sm.meter_w * 6/16 ) / sw
-	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 1/9 )
-	love.graphics.printf( "MESUS VS THE BROMAN EMPIRE", x, y, w/2, "center", 0, 2*sw, 2*sh )
-	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 5/9 )
+	w = sm:getLength( sm.meter_w * 6/16 ) / sw
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 0.5/9 )
+	love.graphics.printf( "MESUS", x, y, w/2, "center", 0, 2*sw, 2*sh )
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 1.5/9 )
+	love.graphics.printf( "VS", x, y, w/2, "center", 0, 2*sw, 2*sh )
+	x, y = sm:getScreenPos( sm.meter_w * 0.5/16, sm.meter_h * 2.5/9 )
+	w = sm:getLength( sm.meter_w * 7/16 ) / sw
+	love.graphics.printf( "THE BROMAN EMPIRE", x, y, w/1.5, "center", 0, 1.5*sw, 1.5*sh )
+	w = sm:getLength( sm.meter_w * 6/16 ) / sw
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 3.5/9 )
 	love.graphics.printf( "Press any key to continue", x, y, w, "center", 0, sw, sh )
-	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 6/9 )
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 4.5/9 )
 	love.graphics.printf( "Press ESC to quit", x, y, w, "center", 0, sw, sh )
 end
 

@@ -11,8 +11,8 @@ Player.sprites.pxpm = 1024
 
 function Player.new(world, x, y, radius, maxspeed, linear_damping, angular_damping, mass, strenght) -- ::Player
 	-- Variable initializations
-	x = x or 5
-	y = y or 5
+	x = x or 4
+	y = y or 4.5
 	radius = radius or 0.4
 	maxspeed = maxspeed or 1.2
 	linear_damping = linear_damping or 5
