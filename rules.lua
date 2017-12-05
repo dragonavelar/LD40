@@ -52,7 +52,7 @@ function Rules:draw( ) -- ::void!
 		"IV - Thou canst click\nto throw fish",
 		"V - Thine people shalt\nbe distracted by fish",
 		"VI - Thou shalt avoid the Bromans",
-		"VII - Beware the\nBromans' sneakyness",
+		"VII - Beware the\nBromans' sneakiness",
 		"VIII - Thou shalt eat vegetables",
 		"IX - Thou shalt not\n be mean",
 		"X - Thou canst press ESC to quit"
