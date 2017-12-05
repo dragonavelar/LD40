@@ -1,6 +1,6 @@
 local Rules = {}
 Rules.__index = Rules
-Rules.state_id = 'menu'
+Rules.state_id = 'rules'
 function Rules.load( screenmanager ) -- ::Rules
 	-- Variable initializations
 	-- Class stuff

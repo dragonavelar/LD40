@@ -1,6 +1,8 @@
 local Menu = {}
 Menu.__index = Menu
 Menu.state_id = 'menu'
+Menu.splashscreen = love.graphics.newImage("assets/intro.png")
+
 function Menu.load( screenmanager ) -- ::Menu
 	-- Variable initializations
 	-- Class stuff
@@ -20,7 +22,7 @@ function Menu:update( dt ) -- ::state_id,table!
 		self.timer = self.timer - dt
 	else
 		if self.start then
-			return "ingame", nil
+			return "rules", nil
 		elseif self.exit then
 			return "exit", nil
 		end
@@ -30,29 +32,24 @@ end
 function Menu:draw( ) -- ::void!
 	local sm = self.screenmanager
 	local x, y, sw, sh
+
+	love.graphics.setColor(255, 255, 255)
+	x, y = sm:getScreenPos( 0, 0 )
+	sw = sm:getScaleFactor( Menu.splashscreen:getWidth(), sm.meter_w )
+	sh = sm:getScaleFactor( Menu.splashscreen:getHeight(), sm.meter_h )
+	love.graphics.draw( Menu.splashscreen, x, y, 0, sw, sh )
+
+	love.graphics.setColor(0, 0, 0)
 	local font = love.graphics.getFont()
 	sh = sm:getScaleFactor( font:getHeight(), 0.5 )
 	sw = sh
-
-	love.graphics.setColor(50, 50, 50)
-	x, y = sm:getScreenPos( 0, 0 )
-	love.graphics.rectangle( "fill", x, y, sm:getLength( sm.meter_w ), sm:getLength( sm.meter_h ) )
-
-	local w = sm:getLength( sm.meter_w * 14/16 ) / sw
-	love.graphics.setColor(255, 255, 255)
+	local w = sm:getLength( sm.meter_w * 6/16 ) / sw
 	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 1/9 )
-	love.graphics.printf( "ULTRA MESUS VS BROMANS", x, y, w/2, "center", 0, 2*sw, 2*sh )
-
-	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 3/9 )
-	love.graphics.printf( "Move you character using the arrow keys or wasd.", x, y, w, "center", 0, sw, sh )
-	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 4/9 )
-	love.graphics.printf( "Convert followers to your cause by rescuing them.\nThe more followers you have,\nthe harder it is to move through the masses", x, y, w, "center", 0, sw, sh )
-	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 6/9 )
-	love.graphics.printf( "Be careful with the Broman patrols,\nthey can pass through the followers and poles!", x, y, w, "center", 0, sw, sh )
-	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 7.5/9 )
-	love.graphics.printf( "Click to throw a fish and distract your followers", x, y, w, "center", 0, sw, sh )
-	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 8/9 )
+	love.graphics.printf( "MESUS VS THE BROMAN EMPIRE", x, y, w/2, "center", 0, 2*sw, 2*sh )
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 5/9 )
 	love.graphics.printf( "Press any key to continue", x, y, w, "center", 0, sw, sh )
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 6/9 )
+	love.graphics.printf( "Press ESC to quit", x, y, w, "center", 0, sw, sh )
 
 end
 
