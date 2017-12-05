@@ -50,7 +50,6 @@ function Menu:draw( ) -- ::void!
 	love.graphics.printf( "Press any key to continue", x, y, w, "center", 0, sw, sh )
 	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 6/9 )
 	love.graphics.printf( "Press ESC to quit", x, y, w, "center", 0, sw, sh )
-
 end
 
 function Menu:input( act, val ) -- ::void!

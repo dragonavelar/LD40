@@ -2,6 +2,7 @@ require( "math" )
 local Gameover = {}
 Gameover.__index = Gameover
 Gameover.state_id = 'gameover'
+Gameover.splashscreen = love.graphics.newImage("assets/gameover.png")
 
 function Gameover.load( screenmanager, extra ) -- ::Gameover
 	-- Variable initializations
@@ -37,31 +38,32 @@ function Gameover:update( dt ) -- ::state_id,table!
 end
 
 function Gameover:draw( ) -- ::void!
-
-
 	local sm = self.screenmanager
-	local x,y, sw, sh
+	local x, y, sw, sh, w
 
-	local sm = self.screenmanager
-	local x, y, sw, sh
+	love.graphics.setColor(255, 255, 255)
+	x, y = sm:getScreenPos( 0, 0 )
+	sw = sm:getScaleFactor( Gameover.splashscreen:getWidth(), sm.meter_w )
+	sh = sm:getScaleFactor( Gameover.splashscreen:getHeight(), sm.meter_h )
+	love.graphics.draw( Gameover.splashscreen, x, y, 0, sw, sh )
+
+	love.graphics.setColor(0, 0, 0)
 	local font = love.graphics.getFont()
 	sh = sm:getScaleFactor( font:getHeight(), 0.5 )
 	sw = sh
-
-	love.graphics.setColor(50, 50, 50)
-	x, y = sm:getScreenPos( 0, 0 )
-	love.graphics.rectangle( "fill", x, y, sm:getLength( sm.meter_w ), sm:getLength( sm.meter_h ) )
-
-	local w = sm:getLength( sm.meter_w * 14/16 ) / sw
+	w = sm:getLength( sm.meter_w * 14/16 ) / sw
 	love.graphics.setColor(128, 0, 0)
-	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 1/9 )
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 0.25/9 )
 	love.graphics.printf( "BUSTED", x, y, w/4, "center", 0, 4*sw, 4*sh )
 
-	love.graphics.setColor(255, 255, 255)
-	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 6/9 )
-	love.graphics.printf( "Score: " .. self.score , x, y, w, "center", 0, sw, sh )
-	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 8/9 )
+	love.graphics.setColor(0, 0, 0)
+	x, y = sm:getScreenPos( sm.meter_w * 4/16, sm.meter_h * 2/9 )
+	love.graphics.printf( "Score: " .. self.score , x, y, w, "left", 0, sw, sh )
+
+	w = sm:getLength( sm.meter_w * 8.5/16 ) / sw
+	x, y = sm:getScreenPos( sm.meter_w * 1/16, sm.meter_h * 2.5/9 )
 	love.graphics.printf( "Press any key to continue", x, y, w, "center", 0, sw, sh )
+
 end
 
 function Gameover:input( act, val ) -- ::void!
