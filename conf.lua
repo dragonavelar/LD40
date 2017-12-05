@@ -1,12 +1,12 @@
 function love.conf( t )
-	t.identity = "USPM"
+	t.identity = "Mesus_LD40"
 	t.version = "0.10.2"
 	t.console = true
 	t.accelerometerjoystick = false
 	t.externalstorage = false
 	t.gammacorrect = false
  
-	t.window.title = "USPM"
+	t.window.title = "Mesus vs the Broman Empire"
 	t.window.icon = 'pug16.png'
 	t.window.width = 256*3
 	t.window.height = 200*3
