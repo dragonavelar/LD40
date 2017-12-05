@@ -1,7 +1,7 @@
 require( "math" )
 local Gameover = {}
 Gameover.__index = Gameover
-Gameover.state_id = 'Gameover'
+Gameover.state_id = 'gameover'
 
 function Gameover.load( screenmanager, extra ) -- ::Gameover
 	-- Variable initializations
@@ -24,7 +24,7 @@ end
 function Gameover:free()
 end
 
-function Gameover:update( dt ) -- ::Gameover_id!	
+function Gameover:update( dt ) -- ::state_id,table!
 	if self.timer > 0 then
 		self.timer = self.timer - dt
 	else
@@ -78,7 +78,7 @@ function Gameover:input( act, val ) -- ::void!
 	end
 end
 
-function Gameover:transition( State, extra ) -- ::Ingame!
+function Gameover:transition( State, extra ) -- ::State!
 	if State == nil then
 		return self
 	end

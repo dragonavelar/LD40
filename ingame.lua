@@ -1,7 +1,7 @@
 require( "collisions" )
 local Ingame = {}
 Ingame.__index = Ingame
-Ingame.state_id = "Ingame"
+Ingame.state_id = "ingame"
 Ingame.sprites = {}
 Ingame.sprites.pxpm = 256
 Ingame.sprites.floor = love.graphics.newImage("assets/floor.png")

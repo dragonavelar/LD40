@@ -1,21 +1,20 @@
-local Menu = {}
-Menu.__index = Menu
-Menu.state_id = 'menu'
-function Menu.load( screenmanager ) -- ::Menu
+local Rules = {}
+Rules.__index = Rules
+Rules.state_id = 'menu'
+function Rules.load( screenmanager ) -- ::Rules
 	-- Variable initializations
 	-- Class stuff
-	local self = setmetatable( {}, Menu )
+	local self = setmetatable( {}, Rules )
 	self.screenmanager = screenmanager
 	self.timer = 1.0
 	self.start = false
-	self.exit = false
 	return self
 end
 
-function Menu:free()
+function Rules:free()
 end
 
-function Menu:update( dt ) -- ::state_id,table!
+function Rules:update( dt ) -- ::state_id,table!
 	if self.timer > 0 then
 		self.timer = self.timer - dt
 	else
@@ -27,7 +26,7 @@ function Menu:update( dt ) -- ::state_id,table!
 	end
 end
 
-function Menu:draw( ) -- ::void!
+function Rules:draw( ) -- ::void!
 	local sm = self.screenmanager
 	local x, y, sw, sh
 	local font = love.graphics.getFont()
@@ -56,7 +55,7 @@ function Menu:draw( ) -- ::void!
 
 end
 
-function Menu:input( act, val ) -- ::void!
+function Rules:input( act, val ) -- ::void!
 	if self.timer <= 0 then
 		if act == "mousepressed" then
 			self.start = true
@@ -70,7 +69,7 @@ function Menu:input( act, val ) -- ::void!
 	end
 end
 
-function Menu:transition( State ) -- ::State!
+function Rules:transition( State ) -- ::State!
 	if State == nil then
 		return self
 	end
@@ -79,4 +78,4 @@ function Menu:transition( State ) -- ::State!
 	return new_state
 end
 
-return Menu
+return Rules
